@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["version","source","scraped_at","asin","product_url","title","main_image","all_images"],
+  "properties": {
+    "version": { "type": "string" },
+    "source": { "type": "string" },
+    "scraped_at": { "type": "string", "format": "date-time" },
+    "asin": { "type": ["string","null"] },
+    "locale": { "type": ["string","null"] },
+    "marketplace": { "type": ["string","null"] },
+    "product_url": { "type": ["string","null"] },
+    "title": { "type": ["string","null"] },
+    "brand": { "type": ["string","null"] },
+    "category_path": { "type": "array" },
+    "main_image": { "type": ["string","null"] },
+    "all_images": { "type": "array" },
+    "pricing": { "type": "object" },
+    "engagement": { "type": "object" },
+    "ratings": { "type": "object" },
+    "reviews_by_star": { "type": "object" },
+    "related_products": { "type": "object" }
+  }
+}

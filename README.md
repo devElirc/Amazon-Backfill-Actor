@@ -1,0 +1,1 @@
+npx apify run --entrypoint src/main.js --input-file input.json

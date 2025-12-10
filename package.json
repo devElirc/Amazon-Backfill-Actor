@@ -1,0 +1,17 @@
+{
+  "name": "sv-amazon-scraper",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js"
+  },
+  "dependencies": {
+    "apify": "^3.5.2",
+    "axios": "^1.4.0",
+    "crawlee": "^3.15.3",
+    "dotenv": "^17.2.3",
+    "minimist": "^1.2.7",
+    "playwright": "^1.56.1"
+  }
+}

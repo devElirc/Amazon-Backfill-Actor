@@ -1,0 +1,169 @@
+{
+  "success": true,
+  "schema_version": "1.1",
+  "data_type": "product_full",
+  "source": {
+    "platform": "amazon",
+    "asin": "B0B8GJC25M",
+    "product_url": "https://www.amazon.com/dp/B0B8GJC25M"
+  },
+  "product": {
+    "asin": "B0B8GJC25M",
+    "title": "Zeerobee Curtain Rods for Windows 48 to 84, 1 Inch Industrial Wrap Around Black Curtain Rod, Indoor/Outdoor Room Divider Adjustable Drapery Pole, 48\"-86\"",
+    "price": {
+      "current": 23.98,
+      "previous": null,
+      "currency": "$"
+    },
+    "media": {
+      "images": [
+        "https://m.media-amazon.com/images/I/31atxISKZCL._AC_US100_.jpg",
+        "https://m.media-amazon.com/images/I/51keKaTa-PL._AC_US100_.jpg",
+        "https://m.media-amazon.com/images/I/41sVVjUy3HL._AC_US100_.jpg",
+        "https://m.media-amazon.com/images/I/41+0-KZyDDL._AC_US100_.jpg",
+        "https://m.media-amazon.com/images/I/41rD8X0356L._AC_US100_.jpg",
+        "https://m.media-amazon.com/images/I/41VyqKbXhcL._AC_US100_.jpg",
+        "https://m.media-amazon.com/images/I/B1-i5TyonvL.SS125_PKplay-button-mb-image-grid-small_.png"
+      ],
+      "videos": [
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/c571835f-a14d-42a6-a189-e8219178580f/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/51be5846-938e-4948-9eb3-4ea0be5fbbab/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/6f6af599-1502-48c3-be97-30b8c08f0ca1/default.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/c1239e1f-b978-4f72-8672-6cd76495e2ae/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/ba17646a-cb1b-43c7-b13e-709863b54315/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/a2ef9fae-8d21-44dc-a387-3ac98bc1b808/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/9ccd9974-9685-4b45-b501-e1a3dbf0672e/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/38bb79ad-5b26-4932-a0d8-10249bad8b4e/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/1362e77a-d928-4ece-93e5-ac591c328198/default.vertical.jobtemplate.hls.m3u8",
+        "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/acc01301-34d9-4dd9-a3cb-80b39264ae9f/default.jobtemplate.hls.m3u8"
+      ]
+    },
+    "badges": {
+      "is_prime": true,
+      "is_best_seller": false,
+      "is_amazon_choice": true,
+      "has_coupon": false,
+      "has_limited_time_deal": true
+    },
+    "social_proof": {
+      "rating": {
+        "average": 4.5,
+        "count": 5652
+      },
+      "reviews_by_star": {
+        "1": [
+          {
+            "reviewer": "Andrés M.",
+            "rating": "1.0 out of 5 stars",
+            "title": "Mala calidad e incompleto",
+            "date": "Reviewed in Mexico on April 30, 2023",
+            "body": "No trae un sujetador intermedio, algunas piezas embonan de forma inestable, el instructivo no es claro en absoluto y la pintura se remueve con facilidad",
+            "verified": "Verified Purchase"
+          }
+        ],
+        "2": [],
+        "3": [
+          {
+            "reviewer": "Michael F.",
+            "rating": "3.0 out of 5 stars",
+            "title": "3.0 out of 5 stars\n\n\n\n\n\n\n\n  \n  \n    Mostly great.",
+            "date": "Reviewed in the United States on September 15, 2025",
+            "body": "I really like the look and feel of the hardware. Everything fit well and felt solid, EXCEPT the included adjustable center rod support was too short to mount to the wall and reach the rod - fully extended the center support is 3/8 inch shorter. Which seems ridiculous, because the two outer brackets are a fixed depth. Not worth returning so it'll live in the junk drawer. Ended up ordering a different pair of center brackets; if you need these to cover a long span plan on spending another $10 to make them work.",
+            "verified": "Verified Purchase"
+          }
+        ],
+        "4": [
+          {
+            "reviewer": "Karrie S",
+            "rating": "4.0 out of 5 stars",
+            "title": "4.0 out of 5 stars\n\n\n\n\n\n\n\n  \n  \n    Clean look and sturdy",
+            "date": "Reviewed in the United States on September 14, 2025",
+            "body": "Looks good in bedroom. Good quality supports heavy light blocking drapes. Packaged wells d easy to install.",
+            "verified": "Verified Purchase"
+          },
+          {
+            "reviewer": "Amazon Customer",
+            "rating": "4.0 out of 5 stars",
+            "title": "It’s Curtain Time",
+            "date": "Reviewed in Canada on July 23, 2025",
+            "body": "This is a pretty great curtain rod. The only drawback is it comes in a number of pieces that makes one wonder if it is sturdy and durable. The pieces are heavy and thus far are holding heavy curtains on a span of over 14’.  I think if you are handy and resourceful you could make this from parts you can source at a hardware store, however you would have to paint it and it would be more expensive so this item has good value. Easy to install - straightforward. Overall, recommended.",
+            "verified": "Verified Purchase"
+          }
+        ],
+        "5": [
+          {
+            "reviewer": "MVS",
+            "rating": "5.0 out of 5 stars",
+            "title": "5.0 out of 5 stars\n\n\n\n\n\n\n\n  \n  \n    Zeerobee Curtain Rods for Windows 72 to 144",
+            "date": "Reviewed in the United States on November 14, 2025",
+            "body": "The Zeerobee curtain rod for my wide window was an excellent buy. The rod feels sturdy and has a nice, clean industrial look without being too heavy or bulky. It adjusts smoothly, and the range from 72 to 144 inches gave me plenty of flexibility to get the fit just right.Installation was pretty straightforward. The hardware that came with it was decent, and once it was mounted, the rod didn’t sag or wobble at all, even with heavier blackout curtains. I also like the wrap-around design; it keeps the light from leaking in on the sides and gives the whole window a cleaner look.The black finish looks nice in person as well. It’s not shiny or cheap-looking; it has a more matte, modern vibe that works well indoors or outdoors. Overall, it’s a strong, good-quality curtain rod that feels like it will last. I’m pleased with it.",
+            "verified": "Verified Purchase"
+          },
+          {
+            "reviewer": "Kelcey",
+            "rating": "5.0 out of 5 stars",
+            "title": "5.0 out of 5 stars\n\n\n\n\n\n\n\n  \n  \n    Beautiful",
+            "date": "Reviewed in the United States on August 20, 2025",
+            "body": "I’m really impressed with these curtain rods! They are very sturdy and well-made, with a sleek industrial look that works perfectly in both modern and classic spaces. The adjustable length (32”-72”) makes them super versatile, and installation was quick and easy with all the hardware included. I love the wrap-around design—it keeps the curtains close to the wall, which not only blocks out more light but also gives a clean, finished look.I’ve used them both for regular windows and as a divider, and they hold up strong without sagging. The 1-inch thickness makes them feel much more durable compared to cheaper rods I’ve tried. The black finish is stylish and doesn’t scratch easily, which is a big plus.Overall, these curtain rods are a great value for the quality you get. I would definitely recommend them to anyone looking for an adjustable, sturdy, and modern-looking curtain rod!",
+            "verified": "Verified Purchase"
+          },
+          {
+            "reviewer": "Barbara E Donaldson",
+            "rating": "5.0 out of 5 stars",
+            "title": "5.0 out of 5 stars\n\n\n\n\n\n\n\n  \n  \n    Perfect in my farmhouse",
+            "date": "Reviewed in the United States on December 6, 2025",
+            "body": "Very sturdy. Easy to install. I love the Rustic look and feel.",
+            "verified": "Verified Purchase"
+          },
+          {
+            "reviewer": "Jessica",
+            "rating": "5.0 out of 5 stars",
+            "title": "5.0 out of 5 stars\n\n\n\n\n\n\n\n  \n  \n    Looks Great & Easy to install",
+            "date": "Reviewed in the United States on December 4, 2025",
+            "body": "This was a great value for the money. It was easy to install and all lined up perfectly. It seems to be very sturdy and made of high quality material and heavy duty material.",
+            "verified": "Verified Purchase"
+          },
+          {
+            "reviewer": "JollyGr33nGSX",
+            "rating": "5.0 out of 5 stars",
+            "title": "5.0 out of 5 stars\n\n\n\n\n\n\n\n  \n  \n    Very Nice !",
+            "date": "Reviewed in the United States on November 20, 2025",
+            "body": "Nice and sturdy. Very easy to assemble. Looks great ! Highly recommend !",
+            "verified": "Verified Purchase"
+          }
+        ]
+      }
+    },
+    "sales": {
+      "units_sold": null,
+      "usually_kept": null
+    },
+    "images": [
+      "https://m.media-amazon.com/images/I/71z6bmjSqyL._AC_SX569_.jpg",
+      "https://m.media-amazon.com/images/G/01/HomeCustomProduct/imageBlock-360-thumbnail-icon-small._CB612115888_FMpng_RI_.png",
+      "https://m.media-amazon.com/images/I/31atxISKZCL._AC_US100_.jpg",
+      "https://m.media-amazon.com/images/I/51keKaTa-PL._AC_US100_.jpg",
+      "https://m.media-amazon.com/images/I/41sVVjUy3HL._AC_US100_.jpg",
+      "https://m.media-amazon.com/images/I/41+0-KZyDDL._AC_US100_.jpg",
+      "https://m.media-amazon.com/images/I/41rD8X0356L._AC_US100_.jpg",
+      "https://m.media-amazon.com/images/I/41VyqKbXhcL._AC_US100_.jpg",
+      "https://m.media-amazon.com/images/I/B1-i5TyonvL.SS125_PKplay-button-mb-image-grid-small_.png"
+    ]
+  },
+  "meta": {
+    "scraped_at": "2025-12-10T10:15:18.543Z",
+    "actor_version": "1.1"
+  },
+  "log": {
+    "start": "2025-12-10T10:15:01.385Z",
+    "steps": [],
+    "validation": {
+      "valid": true,
+      "errors": []
+    },
+    "modules_failed": [],
+    "total_reviews_scraped": 9,
+    "timing_ms": 17158,
+    "sv_ingest": "skipped"
+  }
+}
