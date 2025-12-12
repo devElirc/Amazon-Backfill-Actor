@@ -1,16 +1,38 @@
 {
-  "title": "Amazon Scraper Input",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Amazon Backfill Actor",
+  "description": "Scrape Amazon products by ASINs",
   "type": "object",
-  "schemaVersion": 1,
   "properties": {
     "asins": {
-      "title": "ASINs",
+      "title": "List of ASINs",
+      "description": "Enter ASINs to scrape (array of strings)",
       "type": "array",
-      "editor": "text",
       "items": {
         "type": "string"
       },
-      "default": ["B07GBZ4Q68"]
+      "editor": "json",
+      "default": []
+    },
+    "maxAsinsPerRun": {
+      "title": "Max ASINs per run",
+      "description": "Maximum number of ASINs to process per run",
+      "type": "integer",
+      "minimum": 1,
+      "default": 50
+    },
+    "forceRescrape": {
+      "title": "Force Rescrape",
+      "description": "If true, scrape ASINs even if they were scraped before",
+      "type": "boolean",
+      "default": false
+    },
+    "context": {
+      "title": "Context",
+      "description": "Optional context object to pass through the run",
+      "type": "object",
+      "editor": "json",
+      "default": {}
     }
   },
   "required": ["asins"]
