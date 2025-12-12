@@ -1,29 +1,34 @@
 {
   "schemaVersion": 1,
   "title": "Amazon Backfill Actor Input",
+  "description": "Input schema for the Amazon Backfill Actor",
   "type": "object",
   "properties": {
     "asins": {
       "title": "ASINs",
-      "description": "List of ASINs to scrape",
+      "description": "Array of ASINs to scrape",
       "type": "array",
-      "items": { "type": "string" },
+      "items": {
+        "type": "string"
+      },
       "editor": "json",
       "default": []
     },
     "maxAsinsPerRun": {
-      "title": "Max ASINs per run",
+      "title": "Max ASINs Per Run",
+      "description": "Maximum number of ASINs this actor should process in a single run",
       "type": "integer",
       "default": 50
     },
     "forceRescrape": {
       "title": "Force Rescrape",
+      "description": "If true, scrape ASINs even if they were previously scraped",
       "type": "boolean",
       "default": false
     },
     "context": {
-      "title": "Context Object",
-      "description": "Optional metadata such as userId, source, etc.",
+      "title": "Context",
+      "description": "Optional metadata object (user ID, source, etc.)",
       "type": "object",
       "editor": "json",
       "additionalProperties": true,
