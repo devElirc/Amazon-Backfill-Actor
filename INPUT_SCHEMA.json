@@ -1,0 +1,17 @@
+{
+  "title": "Amazon Scraper Input",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "asins": {
+      "title": "ASINs",
+      "type": "array",
+      "editor": "text",
+      "items": {
+        "type": "string"
+      },
+      "default": ["B07GBZ4Q68"]
+    }
+  },
+  "required": ["asins"]
+}

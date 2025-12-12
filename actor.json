@@ -2,6 +2,8 @@
   "name": "amazon-scraper",
   "version": "1.0.0",
   "buildTag": "latest",
+  "main": "src/main.js",
+  "input": "./INPUT_SCHEMA.json",
   "env": {},
-  "main": "src/main.js"
+  "actorSpecification": 1
 }

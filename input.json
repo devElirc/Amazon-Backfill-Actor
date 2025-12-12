@@ -1,4 +1,15 @@
 {
-  "asin": "B0B8GJC25M",
-  "url": "https://www.amazon.com/dp/B0B8GJC25M"
+  "asins": [
+    "B0DK9WMNSH",
+    "B0DP5ZMGMW",
+    "B0FJBYX36M",
+    "B0DP5ZG8WJ",
+    "B0B8GJC25M"
+  ],
+  "maxAsinsPerRun": 5,
+  "forceRescrape": false,
+  "context": {
+    "source": "weekly_trending_import",
+    "svUserId": null
+  }
 }
