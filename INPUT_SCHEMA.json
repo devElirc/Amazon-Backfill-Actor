@@ -5,34 +5,22 @@
   "type": "object",
   "properties": {
     "asins": {
-      "title": "ASINs",
-      "description": "Array of ASINs to scrape",
+      "title": "Enter Amazon ASINs",
+      "description": "Paste one ASIN per line. Bulk edit supported.",
       "type": "array",
+      "editor": "stringList",
+      "uniqueItems": true,
       "items": {
         "type": "string"
       },
-      "editor": "json",
       "default": []
     },
     "maxAsinsPerRun": {
       "title": "Max ASINs Per Run",
-      "description": "Maximum number of ASINs this actor should process in a single run",
+      "description": "Maximum number of ASINs to process in a single run",
       "type": "integer",
+      "editor": "number",
       "default": 50
-    },
-    "forceRescrape": {
-      "title": "Force Rescrape",
-      "description": "If true, scrape ASINs even if they were previously scraped",
-      "type": "boolean",
-      "default": false
-    },
-    "context": {
-      "title": "Context",
-      "description": "Optional metadata object (user ID, source, etc.)",
-      "type": "object",
-      "editor": "json",
-      "additionalProperties": true,
-      "default": {}
     }
   },
   "required": ["asins"]
