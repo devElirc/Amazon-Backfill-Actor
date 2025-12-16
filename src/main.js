@@ -195,11 +195,6 @@ const run = async () => {
     const locale = (input.locale || DEFAULT_LOCALE).toUpperCase();
     const maxReviewsPerStar = Number.isInteger(input.maxReviewsPerStar) ? input.maxReviewsPerStar
         : (Number.isInteger(input.max_reviews_per_star) ? input.max_reviews_per_star : DEFAULT_MAX_REVIEWS_PER_STAR);
-    const forceRescrape = input.forceRescrape === true;
-    const contextInfo = input.context || {};
-
-    console.log('[run] Requested ASINs:', asinList);
-    console.log('[run] maxAsinsPerRun:', maxAsinsPerRun, 'locale:', locale, 'forceRescrape:', forceRescrape);
 
     const runId = process.env.APIFY_RUN_ID || `manual-${Date.now()}`;
     const results = [];
@@ -250,7 +245,7 @@ const run = async () => {
                     console.error(`[run][${asin}] CAPTCHA detected`);
                     const errEnvelope = buildErrorEnvelope('CAPTCHA_DETECTED', err, { platform: 'amazon', asin, product_url: url }, resultLog);
                     results.push(errEnvelope);
-                    await page.close().catch(()=>{});
+                    await page.close().catch(() => { });
                     continue; // go to next ASIN
                 }
 
@@ -383,11 +378,59 @@ const run = async () => {
                 } catch (e) {
                 }
 
+
                 // --- Images & Videos
                 let mediaImages = [];
                 let mediaVideos = [];
+
                 try {
-                    const dynamicImageData = await page.$eval('#imgTagWrapperId img', img => img.getAttribute('data-a-dynamic-image')).catch(() => null);
+                    /* ===============================
+                     * 1. MAIN (LANDING) IMAGE — SOURCE OF TRUTH
+                     * =============================== */
+                    let mainImage = null;
+
+                    try {
+                        mainImage = await page.$eval('#landingImage', img => {
+                            const url =
+                                img.getAttribute('data-old-hires') ||
+                                img.getAttribute('src');
+
+                            const dynamic = img.getAttribute('data-a-dynamic-image');
+                            let width = null;
+                            let height = null;
+
+                            if (dynamic) {
+                                try {
+                                    const parsed = JSON.parse(dynamic);
+                                    const firstKey = Object.keys(parsed)[0];
+                                    if (firstKey && parsed[firstKey]) {
+                                        width = parsed[firstKey][0] || null;
+                                        height = parsed[firstKey][1] || null;
+                                    }
+                                } catch (e) { }
+                            }
+
+                            return {
+                                url,
+                                role: 'primary',
+                                position: 1,
+                                width,
+                                height,
+                            };
+                        });
+                    } catch (e) {
+                        // landing image not found
+                    }
+
+                    /* ===============================
+                     * 2. DYNAMIC IMAGE JSON (fallback)
+                     * =============================== */
+                    const dynamicImageData = await page
+                        .$eval('#imgTagWrapperId img', img =>
+                            img.getAttribute('data-a-dynamic-image')
+                        )
+                        .catch(() => null);
+
                     if (dynamicImageData) {
                         try {
                             const parsed = JSON.parse(dynamicImageData);
@@ -395,70 +438,137 @@ const run = async () => {
                                 url,
                                 role: idx === 0 ? 'primary' : 'gallery',
                                 position: idx + 1,
-                                width: parsed[url] && parsed[url][0] ? parsed[url][0] : null,
-                                height: parsed[url] && parsed[url][1] ? parsed[url][1] : null,
+                                width: parsed[url]?.[0] || null,
+                                height: parsed[url]?.[1] || null,
                             }));
-                        } catch (e) {
-                            // ignore parse error
-                        }
+                        } catch (e) { }
                     }
 
-                    // fallback: gallery thumbnails
+                    /* ===============================
+                     * 3. GALLERY THUMBNAILS (fallback)
+                     * =============================== */
                     if (!mediaImages.length) {
-                        const altImgs = await page.$$eval('#altImages img, #imageBlockThumbs img', imgs => imgs.map(img => img.src).filter(Boolean)).catch(() => []);
-                        if (altImgs && altImgs.length) {
-                            mediaImages = altImgs
-                                .filter(src => !/grey-pixel/.test(src))
-                                .map((url, idx) => ({ url, role: idx === 0 ? 'primary' : 'gallery', position: idx + 1 }));
+                        const altImgs = await page
+                            .$$eval(
+                                '#altImages img, #imageBlockThumbs img',
+                                imgs =>
+                                    imgs
+                                        .map(img => img.src)
+                                        .filter(
+                                            src =>
+                                                src &&
+                                                !/grey-pixel/.test(src)
+                                        )
+                            )
+                            .catch(() => []);
+
+                        if (altImgs.length) {
+                            mediaImages = altImgs.map((url, idx) => ({
+                                url,
+                                role: idx === 0 ? 'primary' : 'gallery',
+                                position: idx + 1,
+                            }));
                         }
                     }
 
-                    // richer data from thumbnails
-                    const mediaImagesRaw = await page.$$eval(
-                        '#altImages li[data-csa-c-posy] img, #imageBlockThumbs li[data-csa-c-posy] img',
-                        imgs => {
-                            const out = [];
-                            const seen = new Set();
-                            imgs.forEach(img => {
-                                const src = img.getAttribute('src') || img.getAttribute('data-src') || img.src || null;
-                                if (!src || seen.has(src) || /grey-pixel/.test(src)) return;
-                                seen.add(src);
-                                const width = img.naturalWidth || (img.width ? parseInt(img.width, 10) : null) || null;
-                                const height = img.naturalHeight || (img.height ? parseInt(img.height, 10) : null) || null;
-                                let role = 'gallery';
-                                const alt = img.getAttribute('alt') || '';
-                                const cls = img.className || '';
-                                if (/primary|main|hero|imageblock/i.test(cls + alt)) role = 'primary';
-                                if (/variant|color|swatch/i.test(cls + alt)) role = 'variant';
-                                if (/infograph|infographic/i.test(src + alt)) role = 'infographic';
-                                if (/lifestyle|in use|model/i.test(cls + alt)) role = 'lifestyle';
-                                out.push({ url: src, role, position: out.length + 1, width, height });
-                            });
-                            return out;
-                        }
-                    ).catch(() => []);
-                    if (mediaImagesRaw && mediaImagesRaw.length) {
+                    /* ===============================
+                     * 4. RICH IMAGE METADATA
+                     * =============================== */
+                    const mediaImagesRaw = await page
+                        .$$eval(
+                            '#altImages li[data-csa-c-posy] img, #imageBlockThumbs li[data-csa-c-posy] img',
+                            imgs => {
+                                const out = [];
+                                const seen = new Set();
+
+                                imgs.forEach(img => {
+                                    const src =
+                                        img.getAttribute('data-old-hires') ||
+                                        img.getAttribute('data-src') ||
+                                        img.src;
+
+                                    if (!src || seen.has(src) || /grey-pixel/.test(src)) return;
+
+                                    seen.add(src);
+
+                                    const width =
+                                        img.naturalWidth ||
+                                        parseInt(img.width, 10) ||
+                                        null;
+                                    const height =
+                                        img.naturalHeight ||
+                                        parseInt(img.height, 10) ||
+                                        null;
+
+                                    let role = 'gallery';
+                                    const alt = img.alt || '';
+                                    const cls = img.className || '';
+
+                                    if (/variant|swatch|color/i.test(cls + alt)) role = 'variant';
+                                    if (/infograph/i.test(src + alt)) role = 'infographic';
+                                    if (/lifestyle|model|use/i.test(cls + alt)) role = 'lifestyle';
+
+                                    out.push({
+                                        url: src,
+                                        role,
+                                        position: out.length + 1,
+                                        width,
+                                        height,
+                                    });
+                                });
+
+                                return out;
+                            }
+                        )
+                        .catch(() => []);
+
+                    if (mediaImagesRaw.length) {
                         mediaImages = mediaImagesRaw;
                     }
 
-                    // video extraction (best-effort)
-                    mediaVideos = await page.$$eval(
-                        'li.a-carousel-card.vse-video-card .vse-video-item, .vse-videos .vse-video-item',
-                        items => {
-                            const out = [];
-                            items.forEach((item, index) => {
-                                let thumbnail = null;
-                                const img = item.querySelector('img');
-                                if (img) thumbnail = img.getAttribute('src') || img.getAttribute('data-src') || img.src || null;
-                                let videoUrl = item.dataset?.videoUrl || item.getAttribute('data-video-url') || null;
-                                out.push({ thumbnail_url: thumbnail, video_url: videoUrl, position: index + 1, type: 'amazon_video' });
-                            });
-                            return out;
-                        }
-                    ).catch(() => []);
+                    /* ===============================
+                     * 5. NORMALIZE — FORCE MAIN IMAGE FIRST
+                     * =============================== */
+                    if (mainImage && mainImage.url) {
+                        mediaImages = mediaImages.filter(img => img.url !== mainImage.url);
+                        mediaImages.unshift(mainImage);
+                    }
+
+                    mediaImages = mediaImages.map((img, idx) => ({
+                        ...img,
+                        position: idx + 1,
+                        role: idx === 0 ? 'primary' : img.role || 'gallery',
+                    }));
+
+                    /* ===============================
+                     * 6. VIDEO EXTRACTION (BEST EFFORT)
+                     * =============================== */
+                    mediaVideos = await page
+                        .$$eval(
+                            'li.a-carousel-card.vse-video-card .vse-video-item, .vse-videos .vse-video-item',
+                            items =>
+                                items.map((item, index) => {
+                                    const img = item.querySelector('img');
+                                    return {
+                                        thumbnail_url:
+                                            img?.getAttribute('data-src') ||
+                                            img?.getAttribute('src') ||
+                                            null,
+                                        video_url:
+                                            item.dataset?.videoUrl ||
+                                            item.getAttribute('data-video-url') ||
+                                            null,
+                                        position: index + 1,
+                                        type: 'amazon_video',
+                                    };
+                                })
+                        )
+                        .catch(() => []);
+
                 } catch (e) {
-                    console.warn('images/videos extraction error', String(e));
+                    console.warn('images/videos extraction error:', String(e));
                 }
+
 
                 // ensure at least one image in array
                 if (!Array.isArray(mediaImages)) mediaImages = [];
@@ -729,7 +839,7 @@ const run = async () => {
                         // attempt to save partial envelope locally for debugging
                         try { fs.writeFileSync(`output_partial_${asin}.json`, JSON.stringify(envelope, null, 2)); } catch (e) { }
                         results.push(errEnvelope);
-                        await page.close().catch(()=>{});
+                        await page.close().catch(() => { });
                         continue; // next ASIN
                     }
                 }
@@ -770,24 +880,24 @@ const run = async () => {
                 results.push(finalOutputItem);
 
                 // close page to release memory
-                await page.close().catch(()=>{});
+                await page.close().catch(() => { });
             } catch (err) {
                 console.error(`[run][${asin}] Fatal error:`, String(err));
                 const errEnvelope = buildErrorEnvelope((err && err.message && /captcha/i.test(err.message)) ? 'CAPTCHA_DETECTED' : 'EXCEPTION', err, { platform: 'amazon', asin, product_url: `https://www.amazon.com/dp/${asin}` }, resultLog);
                 results.push(errEnvelope);
-                try { if (page) await page.close().catch(()=>{}); } catch {}
+                try { if (page) await page.close().catch(() => { }); } catch { }
                 continue; // move to next asin
             }
         } // end for each ASIN
 
         // close browser & context
-        try { await browser.close().catch(() => {}); } catch (e) { /* ignore */ }
+        try { await browser.close().catch(() => { }); } catch (e) { /* ignore */ }
 
     } catch (err) {
         console.error('[run] Fatal error starting browser or processing loop', String(err));
         // push global fatal error for whole run
         results.push(buildErrorEnvelope('FATAL', err, {}, { start: NOW() }));
-        try { if (browser) await browser.close().catch(() => {}); } catch {}
+        try { if (browser) await browser.close().catch(() => { }); } catch { }
     }
 
     const finalOutput = {
@@ -797,8 +907,7 @@ const run = async () => {
         meta: {
             scraped_at: NOW(),
             actor_version: ACTOR_VERSION,
-            timing_ms: Date.now() - startTsOverall,
-            context: contextInfo,
+            timing_ms: Date.now() - startTsOverall
         },
     };
 
@@ -824,7 +933,7 @@ run().catch(async (err) => {
             requestedAsins: [],
             results: [buildErrorEnvelope('UNHANDLED', err, {}, { ts: NOW() })],
         };
-        await Actor.setValue('OUTPUT', out).catch(() => {});
+        await Actor.setValue('OUTPUT', out).catch(() => { });
     } catch (e) { /* ignore */ }
     try { await Actor.exit(); } catch (e) { /* ignore */ }
 });
