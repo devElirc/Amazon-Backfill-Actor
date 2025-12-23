@@ -781,25 +781,25 @@ const run = async () => {
                 }
 
                 // Ingest each ASIN individually (non-blocking try/catch)
-                // try {
-                //     const svHeaders = { 'Content-Type': 'application/json' };
-                //     if (process.env['INGEST_API_KEY']) svHeaders['X-API-Key'] = process.env['INGEST_API_KEY'];
-                //     const sv_ingest_url = process.env['INGEST_ENDPOINT'];
-                //     if (sv_ingest_url) {
-                //         const svResp = await axios.post(sv_ingest_url, envelope, {
-                //             headers: svHeaders,
-                //             timeout: 30000,
-                //         });
-                //         resultLog.sv_ingest = {
-                //             status: svResp.status,
-                //             data: (typeof svResp.data === 'object') ? svResp.data : String(svResp.data)
-                //         };
-                //     } else {
-                //         resultLog.sv_ingest = 'skipped';
-                //     }
-                // } catch (err) {
-                //     resultLog.sv_ingest_error = String(err && (err.response ? (err.response.data || err.response.status) : err.message));
-                // }
+                try {
+                    const svHeaders = { 'Content-Type': 'application/json' };
+                    if (process.env['INGEST_API_KEY']) svHeaders['X-API-Key'] = process.env['INGEST_API_KEY'];
+                    const sv_ingest_url = process.env['INGEST_ENDPOINT'];
+                    if (sv_ingest_url) {
+                        const svResp = await axios.post(sv_ingest_url, envelope, {
+                            headers: svHeaders,
+                            timeout: 30000,
+                        });
+                        resultLog.sv_ingest = {
+                            status: svResp.status,
+                            data: (typeof svResp.data === 'object') ? svResp.data : String(svResp.data)
+                        };
+                    } else {
+                        resultLog.sv_ingest = 'skipped';
+                    }
+                } catch (err) {
+                    resultLog.sv_ingest_error = String(err && (err.response ? (err.response.data || err.response.status) : err.message));
+                }
 
                 // final output item for this ASIN
                 const finalOutputItem = buildSuccessEnvelope({
