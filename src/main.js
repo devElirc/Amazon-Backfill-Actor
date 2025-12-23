@@ -378,171 +378,46 @@ const run = async () => {
                 } catch (e) {
                 }
 
-
                 // --- Images & Videos
                 let mediaImages = [];
                 let mediaVideos = [];
 
                 try {
-                    /* ===============================
-                     * 1. MAIN (LANDING) IMAGE — SOURCE OF TRUTH
-                     * =============================== */
-                    let mainImage = null;
-
+                    // ===============================
+                    // 1. CLICK THUMBNAILS TO LOAD IMAGES
+                    // ===============================
                     try {
-                        mainImage = await page.$eval('#landingImage', img => {
-                            const url =
-                                img.getAttribute('data-old-hires') ||
-                                img.getAttribute('src');
+                        await page.waitForSelector('#altImages', { timeout: 1000 });
+                        const thumbnails = await page.$$('#altImages .imageThumbnail');
 
-                            const dynamic = img.getAttribute('data-a-dynamic-image');
-                            let width = null;
-                            let height = null;
-
-                            if (dynamic) {
-                                try {
-                                    const parsed = JSON.parse(dynamic);
-                                    const firstKey = Object.keys(parsed)[0];
-                                    if (firstKey && parsed[firstKey]) {
-                                        width = parsed[firstKey][0] || null;
-                                        height = parsed[firstKey][1] || null;
-                                    }
-                                } catch (e) { }
-                            }
-
-                            return {
-                                url,
-                                role: 'primary',
-                                position: 1,
-                                width,
-                                height,
-                            };
-                        });
-                    } catch (e) {
-                        // landing image not found
-                    }
-
-                    /* ===============================
-                     * 2. DYNAMIC IMAGE JSON (fallback)
-                     * =============================== */
-                    const dynamicImageData = await page
-                        .$eval('#imgTagWrapperId img', img =>
-                            img.getAttribute('data-a-dynamic-image')
-                        )
-                        .catch(() => null);
-
-                    if (dynamicImageData) {
-                        try {
-                            const parsed = JSON.parse(dynamicImageData);
-                            mediaImages = Object.keys(parsed).map((url, idx) => ({
-                                url,
-                                role: idx === 0 ? 'primary' : 'gallery',
-                                position: idx + 1,
-                                width: parsed[url]?.[0] || null,
-                                height: parsed[url]?.[1] || null,
-                            }));
-                        } catch (e) { }
-                    }
-
-                    /* ===============================
-                     * 3. GALLERY THUMBNAILS (fallback)
-                     * =============================== */
-                    if (!mediaImages.length) {
-                        const altImgs = await page
-                            .$$eval(
-                                '#altImages img, #imageBlockThumbs img',
-                                imgs =>
-                                    imgs
-                                        .map(img => img.src)
-                                        .filter(
-                                            src =>
-                                                src &&
-                                                !/grey-pixel/.test(src)
-                                        )
-                            )
-                            .catch(() => []);
-
-                        if (altImgs.length) {
-                            mediaImages = altImgs.map((url, idx) => ({
-                                url,
-                                role: idx === 0 ? 'primary' : 'gallery',
-                                position: idx + 1,
-                            }));
+                        for (let i = 0; i < thumbnails.length; i++) {
+                            const thumb = thumbnails[i];
+                            await thumb.click();
+                            await page.waitForTimeout(100); // wait for main image to update
                         }
+                    } catch (err) {
+                        console.warn('No thumbnails to click or timeout:', err.message);
                     }
 
-                    /* ===============================
-                     * 4. RICH IMAGE METADATA
-                     * =============================== */
-                    const mediaImagesRaw = await page
-                        .$$eval(
-                            '#altImages li[data-csa-c-posy] img, #imageBlockThumbs li[data-csa-c-posy] img',
-                            imgs => {
-                                const out = [];
-                                const seen = new Set();
+                    // ===============================
+                    // 2. EXTRACT IMAGES
+                    // ===============================
+                    const imagesData = await page.$$eval(
+                        'ul.a-horizontal.list.maintain-height li.image',
+                        lis => lis
+                            .map(li => {
+                                const img = li.querySelector('img');
+                                return img ? img.getAttribute('data-old-hires') || img.src : null;
+                            })
+                            .filter(Boolean)
+                    );
 
-                                imgs.forEach(img => {
-                                    const src =
-                                        img.getAttribute('data-old-hires') ||
-                                        img.getAttribute('data-src') ||
-                                        img.src;
+                    if (imagesData.length > 0) mediaImages = imagesData;
 
-                                    if (!src || seen.has(src) || /grey-pixel/.test(src)) return;
 
-                                    seen.add(src);
-
-                                    const width =
-                                        img.naturalWidth ||
-                                        parseInt(img.width, 10) ||
-                                        null;
-                                    const height =
-                                        img.naturalHeight ||
-                                        parseInt(img.height, 10) ||
-                                        null;
-
-                                    let role = 'gallery';
-                                    const alt = img.alt || '';
-                                    const cls = img.className || '';
-
-                                    if (/variant|swatch|color/i.test(cls + alt)) role = 'variant';
-                                    if (/infograph/i.test(src + alt)) role = 'infographic';
-                                    if (/lifestyle|model|use/i.test(cls + alt)) role = 'lifestyle';
-
-                                    out.push({
-                                        url: src,
-                                        role,
-                                        position: out.length + 1,
-                                        width,
-                                        height,
-                                    });
-                                });
-
-                                return out;
-                            }
-                        )
-                        .catch(() => []);
-
-                    if (mediaImagesRaw.length) {
-                        mediaImages = mediaImagesRaw;
-                    }
-
-                    /* ===============================
-                     * 5. NORMALIZE — FORCE MAIN IMAGE FIRST
-                     * =============================== */
-                    if (mainImage && mainImage.url) {
-                        mediaImages = mediaImages.filter(img => img.url !== mainImage.url);
-                        mediaImages.unshift(mainImage);
-                    }
-
-                    mediaImages = mediaImages.map((img, idx) => ({
-                        ...img,
-                        position: idx + 1,
-                        role: idx === 0 ? 'primary' : img.role || 'gallery',
-                    }));
-
-                    /* ===============================
-                     * 6. VIDEO EXTRACTION (BEST EFFORT)
-                     * =============================== */
+                    // ===============================
+                    // 5. VIDEO EXTRACTION (BEST EFFORT)
+                    // ===============================
                     mediaVideos = await page
                         .$$eval(
                             'li.a-carousel-card.vse-video-card .vse-video-item, .vse-videos .vse-video-item',
@@ -566,18 +441,9 @@ const run = async () => {
                         .catch(() => []);
 
                 } catch (e) {
-                    console.warn('images/videos extraction error:', String(e));
+                    console.warn('Media extraction error:', String(e));
                 }
 
-
-                // ensure at least one image in array
-                if (!Array.isArray(mediaImages)) mediaImages = [];
-                if (!mediaImages.length) {
-                    try {
-                        const og = await page.$eval('meta[property="og:image"]', el => el.getAttribute('content')).catch(() => null);
-                        if (og) mediaImages.push({ url: og, role: 'primary', position: 1 });
-                    } catch (e) { }
-                }
 
                 // --- Ratings & Reviews sampling
                 let average_rating = null;
@@ -607,34 +473,102 @@ const run = async () => {
                 }
 
                 const reviewsByStar = { '1': [], '2': [], '3': [], '4': [], '5': [] };
+
                 try {
-                    const rawReviews = await page.$$eval('li[data-hook="review"], div[data-hook="cr-widget-FocalReviews"] li[data-hook="review"]', nodes => {
-                        return nodes.map(n => {
-                            const getRatingText = () => {
-                                const selA = n.querySelector('[data-hook="review-star-rating"] .a-icon-alt');
-                                const selB = n.querySelector('[data-hook="cmps-review-star-rating"] .a-icon-alt');
-                                return (selA?.textContent || selB?.textContent || null);
-                            };
-                            const titleEl = n.querySelector('[data-hook="review-title"]') || n.querySelector('.review-title');
-                            const bodyEl = n.querySelector('[data-hook="review-body"] span') || n.querySelector('.review-text-content') || n.querySelector('.reviewText');
-                            return {
-                                reviewer: n.querySelector('.a-profile-name')?.textContent?.trim() || null,
-                                ratingText: getRatingText()?.trim() || null,
-                                title: titleEl?.textContent?.trim() || null,
-                                date: n.querySelector('[data-hook="review-date"]')?.textContent?.trim() || null,
-                                body: bodyEl?.textContent?.trim() || null,
-                                verified: n.querySelector('[data-hook="avp-badge-linkless"]')?.textContent?.trim() || null,
-                            };
-                        });
-                    }).catch(() => []);
+                    const rawReviews = await page.$$eval(
+                        'li[data-hook="review"], div[data-hook="cr-widget-FocalReviews"] li[data-hook="review"]',
+                        nodes => {
+                            return nodes.map(n => {
+                                const ratingText =
+                                    n.querySelector('[data-hook="review-star-rating"] .a-icon-alt')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('[data-hook="cmps-review-star-rating"] .a-icon-alt')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    null;
+
+                                let title = null;
+
+                                // Foreign reviews (original language)
+                                title =
+                                    n.querySelector('[data-hook="review-title"] .cr-original-review-content')
+                                        ?.textContent
+                                        ?.trim() || null;
+
+                                // Standard US reviews (anchor → last meaningful span)
+                                if (!title) {
+                                    const titleAnchor = n.querySelector('a[data-hook="review-title"]');
+                                    if (titleAnchor) {
+                                        const spans = Array.from(titleAnchor.querySelectorAll('span'))
+                                            .map(s => s.textContent?.trim())
+                                            .filter(Boolean);
+                                        title = spans.length ? spans[spans.length - 1] : null;
+                                    }
+                                }
+
+                                // Final fallback (very rare layouts)
+                                if (!title) {
+                                    title = n
+                                        .querySelector('[data-hook="review-title"]')
+                                        ?.textContent
+                                        ?.trim() || null;
+                                }
+
+                                // Guard: prevent rating text from becoming title
+                                if (title && ratingText && title.includes('out of 5 stars')) {
+                                    title = null;
+                                }
+
+                                const body =
+                                    n.querySelector('[data-hook="review-body"] .cr-original-review-content')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('[data-hook="review-body"] span')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('.review-text-content span')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('.reviewText')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    null;
+
+                                return {
+                                    reviewer:
+                                        n.querySelector('.a-profile-name')
+                                            ?.textContent
+                                            ?.trim() || null,
+                                    ratingText,
+                                    title,
+                                    date:
+                                        n.querySelector('[data-hook="review-date"]')
+                                            ?.textContent
+                                            ?.trim() || null,
+                                    body,
+                                    verified:
+                                        n.querySelector('[data-hook="avp-badge-linkless"]')
+                                            ?.textContent
+                                            ?.trim() || null,
+                                };
+                            });
+                        }
+                    ).catch(() => []);
+
                     if (Array.isArray(rawReviews)) {
                         for (const rv of rawReviews) {
-                            const rtxt = rv.ratingText || '';
-                            const mm = rtxt.match(/([0-9]+(?:[.,][0-9]+)?)/);
+                            if (!rv.ratingText) continue;
+
+                            // Locale-safe rating parse
+                            const mm = rv.ratingText.match(/([0-9]+(?:[.,][0-9]+)?)/);
                             if (!mm) continue;
+
                             const num = parseFloat(mm[1].replace(',', '.'));
                             if (Number.isNaN(num)) continue;
-                            const star = String(Math.round(Math.max(0.5, Math.min(5, num))));
+
+                            const star = String(Math.round(Math.max(1, Math.min(5, num))));
+
                             if (reviewsByStar[star].length < maxReviewsPerStar) {
                                 reviewsByStar[star].push({
                                     reviewer: rv.reviewer,
@@ -648,8 +582,10 @@ const run = async () => {
                         }
                     }
                 } catch (e) {
-                    // ignore
+                    // intentionally ignored (Amazon DOM volatility)
                 }
+
+
 
                 // --- Badges
                 const badges = {
@@ -693,7 +629,7 @@ const run = async () => {
                         previous: priceList !== null ? priceList : null,
                         currency: currency || null,
                     },
-                    images: (Array.isArray(mediaImages) ? mediaImages.map(i => i.url) : []).filter(Boolean),
+                    images: mediaImages,
                     videos: (Array.isArray(mediaVideos) ? mediaVideos.map(v => v.video_url || v.videoUrl || v.video) : []).filter(Boolean),
                     badges: [], // keep original simple boolean badges translated below if needed
                     ratings: {
@@ -845,25 +781,25 @@ const run = async () => {
                 }
 
                 // Ingest each ASIN individually (non-blocking try/catch)
-                try {
-                    const svHeaders = { 'Content-Type': 'application/json' };
-                    if (process.env['INGEST_API_KEY']) svHeaders['X-API-Key'] = process.env['INGEST_API_KEY'];
-                    const sv_ingest_url = process.env['INGEST_ENDPOINT'];
-                    if (sv_ingest_url) {
-                        const svResp = await axios.post(sv_ingest_url, envelope, {
-                            headers: svHeaders,
-                            timeout: 30000,
-                        });
-                        resultLog.sv_ingest = {
-                            status: svResp.status,
-                            data: (typeof svResp.data === 'object') ? svResp.data : String(svResp.data)
-                        };
-                    } else {
-                        resultLog.sv_ingest = 'skipped';
-                    }
-                } catch (err) {
-                    resultLog.sv_ingest_error = String(err && (err.response ? (err.response.data || err.response.status) : err.message));
-                }
+                // try {
+                //     const svHeaders = { 'Content-Type': 'application/json' };
+                //     if (process.env['INGEST_API_KEY']) svHeaders['X-API-Key'] = process.env['INGEST_API_KEY'];
+                //     const sv_ingest_url = process.env['INGEST_ENDPOINT'];
+                //     if (sv_ingest_url) {
+                //         const svResp = await axios.post(sv_ingest_url, envelope, {
+                //             headers: svHeaders,
+                //             timeout: 30000,
+                //         });
+                //         resultLog.sv_ingest = {
+                //             status: svResp.status,
+                //             data: (typeof svResp.data === 'object') ? svResp.data : String(svResp.data)
+                //         };
+                //     } else {
+                //         resultLog.sv_ingest = 'skipped';
+                //     }
+                // } catch (err) {
+                //     resultLog.sv_ingest_error = String(err && (err.response ? (err.response.data || err.response.status) : err.message));
+                // }
 
                 // final output item for this ASIN
                 const finalOutputItem = buildSuccessEnvelope({
@@ -937,5 +873,3 @@ run().catch(async (err) => {
     } catch (e) { /* ignore */ }
     try { await Actor.exit(); } catch (e) { /* ignore */ }
 });
-
-
