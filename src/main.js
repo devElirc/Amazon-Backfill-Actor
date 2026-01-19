@@ -145,6 +145,7 @@ async function autoScroll(page, step = 600, delay = 100) {
 }
 
 const run = async () => {
+             return null;
     await Actor.init();
     console.log('[run] Actor init @', NOW());
 
