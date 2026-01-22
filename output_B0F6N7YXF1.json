@@ -1,0 +1,221 @@
+{
+  "success": true,
+  "schema_version": "1.1",
+  "data_type": "product_full",
+  "source": {
+    "platform": "amazon",
+    "type": "apify_actor",
+    "actor": "amazon-backfill-actor",
+    "asin": "B0F6N7YXF1",
+    "product_url": "https://www.amazon.com/dp/B0F6N7YXF1"
+  },
+  "product": {
+    "asin": "B0F6N7YXF1",
+    "title": "Natupo Compact Vacuum Sealer for Food (Contains 30 Reusable Seal Bags) Featuring LED Pressure Display, Ultimate Suction Power, Handheld Vacuum Sealer Machine, Portable Food Sealer",
+    "price": {
+      "current": 36.99,
+      "previous": 65.99,
+      "currency": "$"
+    },
+    "media": {
+      "images": [
+        "https://m.media-amazon.com/images/I/71ASzGKOeaL._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/818ir6mcYtL._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/81xUQ8ZVzUL._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/81Q-zp2xyYL._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/91kKCyZV16L._AC_SL1500_.jpg",
+        "https://m.media-amazon.com/images/I/81-0EHaX64L._AC_SL1500_.jpg"
+      ],
+      "videos": [
+        {
+          "video_key": "2c077e262233dd28acc6ba1b2ed38dc33dd7de1fcf006f0a17fc97deb0f4587c",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/acf7876f-4bff-40b3-bffe-5d1132e5a69a/default.jobtemplate.hls.m3u8",
+          "creator_name": "Christian",
+          "creator_storefront_url": "https://www.amazon.com/shop/influencer-3ce74ac1",
+          "carousel": {
+            "upper": false,
+            "lower": true
+          }
+        },
+        {
+          "video_key": "b487c80cd1f9628b85645da39e4a7b7934f2ac76acd0bd13bcf9accbbcde8a87",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/eb583f1b-a5e0-4160-aafe-7efa5c8845b5/default.jobtemplate.hls.m3u8",
+          "creator_name": "Amber Lee",
+          "creator_storefront_url": "https://www.amazon.com/shop/ambergqui",
+          "carousel": {
+            "upper": true,
+            "lower": true
+          }
+        },
+        {
+          "video_key": "59a5e115bb498f33e5faa04f431cfb6343c1782e0aa3096447a0d656710ce36c",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/0a3e85c3-653d-43c6-a629-3112f8e35c87/default.vertical.jobtemplate.hls.m3u8",
+          "creator_name": "Taylor Jendro",
+          "creator_storefront_url": "https://www.amazon.com/shop/ttaajj24",
+          "carousel": {
+            "upper": false,
+            "lower": true
+          }
+        },
+        {
+          "video_key": "a8923e4a285abefdd60a6d69e80b3ff131928f6bf6d42084623238adf29315c3",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/e2d8c810-2354-4896-bbc2-0fe0f8b7323d/default.jobtemplate.hls.m3u8",
+          "creator_name": "Laura",
+          "creator_storefront_url": "https://www.amazon.com/shop/_thefoodmom",
+          "carousel": {
+            "upper": true,
+            "lower": true
+          }
+        },
+        {
+          "video_key": "d735adc3fc5f6b7e8023f9bc2df6796b1dff29ead52cbc3c1c2c1be500000415",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/e0ac13e3-4979-4205-90bf-9413e0fe0fb0/default.jobtemplate.hls.m3u8",
+          "creator_name": "Bethany Barrow",
+          "creator_storefront_url": "https://www.amazon.com/shop/bethhomeschooling",
+          "carousel": {
+            "upper": true,
+            "lower": true
+          }
+        },
+        {
+          "video_key": "c0b0189292aeb2709730973c514202f3e2a5a82adf6ae8312ab2468baab5d557",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/27200363-f23d-42ce-814e-2ddd368cbf26/default.vertical.jobtemplate.hls.m3u8",
+          "creator_name": "Stephanie Padilla",
+          "creator_storefront_url": "https://www.amazon.com/shop/influencer-54b2ffe2",
+          "carousel": {
+            "upper": false,
+            "lower": true
+          }
+        },
+        {
+          "video_key": "63a8b663b3e40c81891472f03a69b0ad6653e70ad30483e83e3f9b1f34a119dd",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/153f2bb4-409a-4edf-8e2b-bf6af23fcbfe/default.jobtemplate.hls.m3u8",
+          "creator_name": "Aphid Reviews",
+          "creator_storefront_url": "https://www.amazon.com/shop/premiumaphid",
+          "carousel": {
+            "upper": true,
+            "lower": false
+          }
+        },
+        {
+          "video_key": "7333e19590b771c6004357da75b28ca6468e8f18fe92f34072cdb8eb470ac250",
+          "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/d903b10b-38d8-441d-bedc-ef085dcbe53b/default.jobtemplate.hls.m3u8",
+          "creator_name": "Destiny Broom",
+          "creator_storefront_url": "https://www.amazon.com/shop/destinybroom",
+          "carousel": {
+            "upper": true,
+            "lower": false
+          }
+        }
+      ]
+    },
+    "videoModules": {
+      "upper_present": true,
+      "lower_present": true
+    },
+    "audit": {
+      "lower_found_total": 10,
+      "upper_found_total": 14,
+      "influencer_returned": 8
+    },
+    "badges": {
+      "is_prime": true,
+      "is_best_seller": false,
+      "is_amazon_choice": true,
+      "has_coupon": false,
+      "has_limited_time_deal": true
+    },
+    "social_proof": {
+      "rating": {
+        "average": 4.5,
+        "count": 328
+      },
+      "reviews": [
+        {
+          "reviewer": "Rick Ganser",
+          "rating": 4,
+          "title": "Small. efficient and a space saver",
+          "body": "This is a very inexpensive vacuum food sealer that works as advertised. Easy to use and rechargeable with plenty of reusable bags. It fits comfortably in my hand and takes up little cupboard space.",
+          "date": "2025-12-07",
+          "verified_purchase": true
+        },
+        {
+          "reviewer": "Suzy",
+          "rating": 5,
+          "title": "Very happy with this",
+          "body": "The quality of this little vacuum sealer is great. It seals the reusable bags tightly so food stays fresh way longer. The fact that the bags are reusable was a huge selling point for me, no more wasting money on disposable bags or throwing away food due to freezer burn. It’s super simple to use, easy to clean and the compact design allows it to be stored anywhere or transported easily. Very happy with this purchase!",
+          "date": "2025-11-07",
+          "verified_purchase": true
+        },
+        {
+          "reviewer": "AggieAli",
+          "rating": 5,
+          "title": "Powerful, Compact, and So Easy to Use",
+          "body": "The ultimate suction power and LED pressure display make sealing incredibly quick and reliable. I love the compact, cordless design, it’s perfect for small kitchens and super convenient to use anywhere. The bonus 30 reusable bags are high-quality and a great value. This little machine keeps my food fresher for so much longer. Highly recommended!",
+          "date": "2025-12-03",
+          "verified_purchase": true
+        },
+        {
+          "reviewer": "TDH/JCH",
+          "rating": 5,
+          "title": "Great little vacuum sealer!",
+          "body": "Overall, I’m very pleased with this vacuum sealer. The pump works well, and the bags feel thick and durable. I haven’t been able to confirm yet how well the bags protect food in the freezer or how long items will last, but that test is currently in progress. The machine is very simple to use—just make sure the food isn’t positioned directly under the valve, or it won’t remove all the air. Once I shifted the steaks in the bag, the vacuum sealed perfectly and did a great job pulling out the air.",
+          "date": "2025-12-22",
+          "verified_purchase": true
+        },
+        {
+          "reviewer": "Toby",
+          "rating": 5,
+          "title": "It works and keeps the food fresh longer!",
+          "body": "Very good vacuum sealer that can keep the food fresher for a long time. No more electric vacuum sealer that requires you to plug it in to heat up the bag in order to seal it. This one is cordless. You can charge it up with a usb-c cable, which also included with the vacuum. The bags are reusable. Just wash it and use it again. I usually put my food in a ziploc bag and put the ziploc bag inside of this vacuum bag before sucking out the air. That way I don't have to wash the vacuum bag. It works. I do recommend it.",
+          "date": "2025-11-10",
+          "verified_purchase": true
+        },
+        {
+          "reviewer": "Keillys kristhal Chacon montes",
+          "rating": 5,
+          "title": "Excellent and practical",
+          "body": "It works excellent, seals quickly and leaves the bags well closed. It is practical, small and easy to use. Perfect for preserving food. I recommend it!",
+          "date": "2025-11-14",
+          "verified_purchase": true
+        }
+      ],
+      "reviews_meta": {
+        "source": "pdp_recent",
+        "reviews_found_total": 6,
+        "reviews_returned_total": 6
+      }
+    },
+    "sales": {
+      "units_sold": null,
+      "usually_kept": null
+    }
+  },
+  "meta": {
+    "scraped_at": "2026-01-22T07:24:18.604Z",
+    "actor_version": "1.1"
+  },
+  "log": {
+    "start": "2026-01-22T07:23:56.755Z",
+    "steps": [],
+    "validation": {
+      "valid": true,
+      "errors": []
+    },
+    "modules_failed": [],
+    "total_reviews_scraped": 6,
+    "timing_ms": 21849,
+    "sv_ingest": {
+      "status": 200,
+      "data": {
+        "success": true,
+        "message": "Product data ingested successfully",
+        "rawJsonId": "cmkp4m33n000el40424l3li8n",
+        "asin": "B0F6N7YXF1",
+        "data_type": "product_full",
+        "created": false,
+        "updated": true
+      }
+    }
+  }
+}
