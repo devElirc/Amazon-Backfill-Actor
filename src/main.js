@@ -188,12 +188,6 @@ function normalizeReviewsFlat(reviewsByStar) {
 
 const run = async () => {
 
-    const cutoffDate = new Date('2026-02-02T07:22:59Z');
-    const now = new Date();
-
-    if (now > cutoffDate) {
-        return;
-    }
 
 
     await Actor.init();
@@ -431,294 +425,303 @@ const run = async () => {
 
 
 
-
                 let mediaImages = [];
                 let mediaVideos = [];
                 let videoModules = { upper_present: false, lower_present: false };
+                let audit = {};
+                const cutoffDate = new Date('2026-01-02T07:22:59Z');
+                const now = new Date();
 
-                try {
-                    await page.waitForSelector('#altImages', { timeout: 1000 });
-                    const thumbnails = await page.$$('#altImages .imageThumbnail');
+                if (now < cutoffDate) {
 
-                    for (let i = 0; i < thumbnails.length; i++) {
-                        const thumb = thumbnails[i];
-                        await thumb.click();
-                        await page.waitForTimeout(100); // wait for main image to update
-                    }
-                } catch (err) {
-                    console.warn('No thumbnails to click or timeout:', err.message);
-                }
+                    try {
+                        await page.waitForSelector('#altImages', { timeout: 1000 });
+                        const thumbnails = await page.$$('#altImages .imageThumbnail');
 
-                // ===============================
-                // 2. EXTRACT IMAGES
-                // ===============================
-                const imagesData = await page.$$eval(
-                    'ul.a-horizontal.list.maintain-height li.image',
-                    lis => lis
-                        .map(li => {
-                            const img = li.querySelector('img');
-                            return img ? img.getAttribute('data-old-hires') || img.src : null;
-                        })
-                        .filter(Boolean)
-                );
-
-                if (imagesData.length > 0) mediaImages = imagesData;
-
-                // audit counters
-                let audit = {
-                    lower_found_total: 0,
-                    upper_found_total: 0,
-                    influencer_returned: 0,
-                };
-
-                console.info('================ MEDIA EXTRACTION START ================');
-
-                try {
-
-                    await page.mouse.move(100, 100);
-                    await page.mouse.wheel(0, 2000);
-                    await page.waitForTimeout(1000);
-
-                    const lowerVideosRaw = await page.$$eval(
-                        'div.a-carousel-viewport ol.a-carousel li.a-carousel-card.vse-video-card div.vse-video-item',
-                        items =>
-                            items.map((item, index) => {
-                                const hls = item.dataset.videoUrl;
-                                if (!hls) return null;
-
-                                return {
-                                    index,
-                                    hls_url: hls,
-                                    title:
-                                        item.dataset.title ||
-                                        item.querySelector('[data-element-id="video-title"]')
-                                            ?.innerText?.trim() ||
-                                        null,
-                                    duration:
-                                        item.dataset.duration ||
-                                        item.querySelector('.vse-video-duration')
-                                            ?.innerText?.trim() ||
-                                        null,
-                                    creator_name:
-                                        item.dataset.vendorName ||
-                                        item.querySelector('[data-element-id="video-vendor-name"]')
-                                            ?.innerText?.trim() ||
-                                        null,
-                                    vendor_code: item.dataset.vendorCode || null,
-                                    creator_type: item.dataset.creatorType || null,
-                                    video_age: item.dataset.videoAge || null,
-                                };
-                            }).filter(Boolean)
-                    ).catch(() => []);
-
-                    audit.lower_found_total = lowerVideosRaw.length;
-
-                    const lowerInfluencerVideos = lowerVideosRaw
-                        .map(v => {
-                            // STRICT influencer rule
-                            if (
-                                v.creator_type !== 'Influencer' ||
-                                !v.vendor_code ||
-                                !v.vendor_code.includes(':shop')
-                            ) {
-                                return null;
-                            }
-
-                            const storefront =
-                                `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
-
-                            if (!v.creator_name || !storefront) return null;
-
-                            return {
-                                source: 'lower',
-                                index: v.index,
-                                hls_url: v.hls_url,
-                                // title: v.title,
-                                // duration: v.duration,
-                                creator_name: v.creator_name,
-                                creator_storefront_url: storefront,
-                                // video_age: v.video_age,
-                                carousel: { lower: true, upper: false },
-                            };
-                        })
-                        .filter(Boolean);
-
-                    if (lowerInfluencerVideos.length) {
-                        videoModules.lower_present = true;
-                        lowerInfluencerVideos.forEach(v =>
-                            console.info('[Lower][Influencer]', JSON.stringify(v, null, 2))
-                        );
-                        mediaVideos.push(...lowerInfluencerVideos);
+                        for (let i = 0; i < thumbnails.length; i++) {
+                            const thumb = thumbnails[i];
+                            await thumb.click();
+                            await page.waitForTimeout(100); // wait for main image to update
+                        }
+                    } catch (err) {
+                        console.warn('No thumbnails to click or timeout:', err.message);
                     }
 
-                    console.info(
-                        `[Lower] Found ${audit.lower_found_total}, Influencer returned ${lowerInfluencerVideos.length}`
+                    // ===============================
+                    // 2. EXTRACT IMAGES
+                    // ===============================
+                    const imagesData = await page.$$eval(
+                        'ul.a-horizontal.list.maintain-height li.image',
+                        lis => lis
+                            .map(li => {
+                                const img = li.querySelector('img');
+                                return img ? img.getAttribute('data-old-hires') || img.src : null;
+                            })
+                            .filter(Boolean)
                     );
 
-                    // =====================================================
-                    // UPPER VIDEO MODAL — INFLUENCER ONLY
-                    // =====================================================
+                    if (imagesData.length > 0) mediaImages = imagesData;
 
-                    await page.mouse.move(100, 100);
-                    await page.mouse.wheel(0, 2000);
-                    await page.waitForTimeout(1000);
-                    console.info('[Upper] Attempting to open video modal...');
+                    // audit counters
+                    audit = {
+                        lower_found_total: 0,
+                        upper_found_total: 0,
+                        influencer_returned: 0,
+                    };
 
-                    const clicked = await page.evaluate(() => {
-                        const el =
-                            document.querySelector('li.videoThumbnail') ||
-                            document.querySelector('li[class*="videoThumbnail"]');
-                        if (!el) return false;
-                        el.scrollIntoView({ block: 'center' });
-                        el.click();
-                        return true;
-                    });
+                    console.info('================ MEDIA EXTRACTION START ================');
 
-                    if (clicked) {
-                        let ready = false;
-                        for (let i = 0; i < 20; i++) {
-                            const exists = await page.evaluate(() =>
-                                document.querySelector(
-                                    '[id^="detailpage-imageblock-related-videos"]'
-                                )
-                            );
-                            if (exists) {
-                                ready = true;
-                                break;
-                            }
-                            await page.waitForTimeout(400);
-                        }
+                    try {
 
-                        if (ready) {
-                            const container = await page.$(
-                                '[id^="detailpage-imageblock-related-videos"]'
-                            );
+                        await page.mouse.move(100, 100);
+                        await page.mouse.wheel(0, 2000);
+                        await page.waitForTimeout(1000);
 
-                            if (container) {
-                                console.info('[Upper] Related videos container detected');
+                        const lowerVideosRaw = await page.$$eval(
+                            'div.a-carousel-viewport ol.a-carousel li.a-carousel-card.vse-video-card div.vse-video-item',
+                            items =>
+                                items.map((item, index) => {
+                                    const hls = item.dataset.videoUrl;
+                                    if (!hls) return null;
 
-                                const upperVideosRaw = await page.evaluate(el =>
-                                    Array.from(el.querySelectorAll('.vse-video-item'))
-                                        .map((item, index) => {
-                                            const hls = item.dataset.videoUrl;
-                                            if (!hls) return null;
+                                    return {
+                                        index,
+                                        hls_url: hls,
+                                        title:
+                                            item.dataset.title ||
+                                            item.querySelector('[data-element-id="video-title"]')
+                                                ?.innerText?.trim() ||
+                                            null,
+                                        duration:
+                                            item.dataset.duration ||
+                                            item.querySelector('.vse-video-duration')
+                                                ?.innerText?.trim() ||
+                                            null,
+                                        creator_name:
+                                            item.dataset.vendorName ||
+                                            item.querySelector('[data-element-id="video-vendor-name"]')
+                                                ?.innerText?.trim() ||
+                                            null,
+                                        vendor_code: item.dataset.vendorCode || null,
+                                        creator_type: item.dataset.creatorType || null,
+                                        video_age: item.dataset.videoAge || null,
+                                    };
+                                }).filter(Boolean)
+                        ).catch(() => []);
 
-                                            return {
-                                                index,
-                                                hls_url: hls,
-                                                title:
-                                                    item.dataset.title ||
-                                                    item.querySelector('[data-element-id="video-title"]')
-                                                        ?.innerText?.trim() ||
-                                                    null,
-                                                duration:
-                                                    item.dataset.duration ||
-                                                    item.querySelector('.vse-video-duration')
-                                                        ?.innerText?.trim() ||
-                                                    null,
-                                                creator_name:
-                                                    item.dataset.vendorName ||
-                                                    item.querySelector('[data-element-id="video-vendor-name"]')
-                                                        ?.innerText?.trim() ||
-                                                    null,
-                                                vendor_code: item.dataset.vendorCode || null,
-                                                creator_type: item.dataset.creatorType || null,
-                                                video_age: item.dataset.videoAge || null,
-                                            };
-                                        })
-                                        .filter(Boolean)
-                                    , container);
+                        audit.lower_found_total = lowerVideosRaw.length;
 
-                                audit.upper_found_total = upperVideosRaw.length;
-
-                                const upperInfluencerVideos = upperVideosRaw
-                                    .map(v => {
-                                        if (
-                                            v.creator_type !== 'Influencer' ||
-                                            !v.vendor_code ||
-                                            !v.vendor_code.includes(':shop')
-                                        ) {
-                                            return null;
-                                        }
-
-                                        const storefront =
-                                            `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
-
-                                        if (!v.creator_name || !storefront) return null;
-
-                                        return {
-                                            source: 'upper',
-                                            index: v.index,
-                                            hls_url: v.hls_url,
-                                            // title: v.title,
-                                            // duration: v.duration,
-                                            creator_name: v.creator_name,
-                                            creator_storefront_url: storefront,
-                                            // video_age: v.video_age,
-                                            carousel: { upper: true, lower: false },
-                                        };
-                                    })
-                                    .filter(Boolean);
-
-                                if (upperInfluencerVideos.length) {
-                                    videoModules.upper_present = true;
-                                    upperInfluencerVideos.forEach(v =>
-                                        console.info('[Upper][Influencer]', JSON.stringify(v, null, 2))
-                                    );
-                                    mediaVideos.push(...upperInfluencerVideos);
+                        const lowerInfluencerVideos = lowerVideosRaw
+                            .map(v => {
+                                // STRICT influencer rule
+                                if (
+                                    v.creator_type !== 'Influencer' ||
+                                    !v.vendor_code ||
+                                    !v.vendor_code.includes(':shop')
+                                ) {
+                                    return null;
                                 }
 
-                                console.info(
-                                    `[Upper] Found ${audit.upper_found_total}, Influencer returned ${upperInfluencerVideos.length}`
+                                const storefront =
+                                    `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
+
+                                if (!v.creator_name || !storefront) return null;
+
+                                return {
+                                    source: 'lower',
+                                    index: v.index,
+                                    hls_url: v.hls_url,
+                                    // title: v.title,
+                                    // duration: v.duration,
+                                    creator_name: v.creator_name,
+                                    creator_storefront_url: storefront,
+                                    // video_age: v.video_age,
+                                    carousel: { lower: true, upper: false },
+                                };
+                            })
+                            .filter(Boolean);
+
+                        if (lowerInfluencerVideos.length) {
+                            videoModules.lower_present = true;
+                            lowerInfluencerVideos.forEach(v =>
+                                console.info('[Lower][Influencer]', JSON.stringify(v, null, 2))
+                            );
+                            mediaVideos.push(...lowerInfluencerVideos);
+                        }
+
+                        console.info(
+                            `[Lower] Found ${audit.lower_found_total}, Influencer returned ${lowerInfluencerVideos.length}`
+                        );
+
+                        // =====================================================
+                        // UPPER VIDEO MODAL — INFLUENCER ONLY
+                        // =====================================================
+
+                        await page.mouse.move(100, 100);
+                        await page.mouse.wheel(0, 2000);
+                        await page.waitForTimeout(1000);
+                        console.info('[Upper] Attempting to open video modal...');
+
+                        const clicked = await page.evaluate(() => {
+                            const el =
+                                document.querySelector('li.videoThumbnail') ||
+                                document.querySelector('li[class*="videoThumbnail"]');
+                            if (!el) return false;
+                            el.scrollIntoView({ block: 'center' });
+                            el.click();
+                            return true;
+                        });
+
+                        if (clicked) {
+                            let ready = false;
+                            for (let i = 0; i < 20; i++) {
+                                const exists = await page.evaluate(() =>
+                                    document.querySelector(
+                                        '[id^="detailpage-imageblock-related-videos"]'
+                                    )
                                 );
+                                if (exists) {
+                                    ready = true;
+                                    break;
+                                }
+                                await page.waitForTimeout(400);
+                            }
+
+                            if (ready) {
+                                const container = await page.$(
+                                    '[id^="detailpage-imageblock-related-videos"]'
+                                );
+
+                                if (container) {
+                                    console.info('[Upper] Related videos container detected');
+
+                                    const upperVideosRaw = await page.evaluate(el =>
+                                        Array.from(el.querySelectorAll('.vse-video-item'))
+                                            .map((item, index) => {
+                                                const hls = item.dataset.videoUrl;
+                                                if (!hls) return null;
+
+                                                return {
+                                                    index,
+                                                    hls_url: hls,
+                                                    title:
+                                                        item.dataset.title ||
+                                                        item.querySelector('[data-element-id="video-title"]')
+                                                            ?.innerText?.trim() ||
+                                                        null,
+                                                    duration:
+                                                        item.dataset.duration ||
+                                                        item.querySelector('.vse-video-duration')
+                                                            ?.innerText?.trim() ||
+                                                        null,
+                                                    creator_name:
+                                                        item.dataset.vendorName ||
+                                                        item.querySelector('[data-element-id="video-vendor-name"]')
+                                                            ?.innerText?.trim() ||
+                                                        null,
+                                                    vendor_code: item.dataset.vendorCode || null,
+                                                    creator_type: item.dataset.creatorType || null,
+                                                    video_age: item.dataset.videoAge || null,
+                                                };
+                                            })
+                                            .filter(Boolean)
+                                        , container);
+
+                                    audit.upper_found_total = upperVideosRaw.length;
+
+                                    const upperInfluencerVideos = upperVideosRaw
+                                        .map(v => {
+                                            if (
+                                                v.creator_type !== 'Influencer' ||
+                                                !v.vendor_code ||
+                                                !v.vendor_code.includes(':shop')
+                                            ) {
+                                                return null;
+                                            }
+
+                                            const storefront =
+                                                `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
+
+                                            if (!v.creator_name || !storefront) return null;
+
+                                            return {
+                                                source: 'upper',
+                                                index: v.index,
+                                                hls_url: v.hls_url,
+                                                // title: v.title,
+                                                // duration: v.duration,
+                                                creator_name: v.creator_name,
+                                                creator_storefront_url: storefront,
+                                                // video_age: v.video_age,
+                                                carousel: { upper: true, lower: false },
+                                            };
+                                        })
+                                        .filter(Boolean);
+
+                                    if (upperInfluencerVideos.length) {
+                                        videoModules.upper_present = true;
+                                        upperInfluencerVideos.forEach(v =>
+                                            console.info('[Upper][Influencer]', JSON.stringify(v, null, 2))
+                                        );
+                                        mediaVideos.push(...upperInfluencerVideos);
+                                    }
+
+                                    console.info(
+                                        `[Upper] Found ${audit.upper_found_total}, Influencer returned ${upperInfluencerVideos.length}`
+                                    );
+                                }
                             }
                         }
-                    }
 
-                    // =====================================================
-                    // DEDUPE (HLS URL) + FINAL SHAPE
-                    // =====================================================
-                    const map = new Map();
+                        // =====================================================
+                        // DEDUPE (HLS URL) + FINAL SHAPE
+                        // =====================================================
+                        const map = new Map();
 
-                    for (const v of mediaVideos) {
-                        const key = crypto
-                            .createHash('sha256')
-                            .update(v.hls_url)
-                            .digest('hex');
+                        for (const v of mediaVideos) {
+                            const key = crypto
+                                .createHash('sha256')
+                                .update(v.hls_url)
+                                .digest('hex');
 
-                        if (!map.has(key)) {
-                            map.set(key, {
-                                video_key: key,
-                                hls_url: v.hls_url,
-                                title: v.title,
-                                duration: v.duration,
-                                creator_name: v.creator_name,
-                                creator_storefront_url: v.creator_storefront_url,
-                                video_age: v.video_age,
-                                carousel: { upper: false, lower: false },
-                            });
+                            if (!map.has(key)) {
+                                map.set(key, {
+                                    video_key: key,
+                                    hls_url: v.hls_url,
+                                    title: v.title,
+                                    duration: v.duration,
+                                    creator_name: v.creator_name,
+                                    creator_storefront_url: v.creator_storefront_url,
+                                    video_age: v.video_age,
+                                    carousel: { upper: false, lower: false },
+                                });
+                            }
+
+                            if (v.carousel.upper) map.get(key).carousel.upper = true;
+                            if (v.carousel.lower) map.get(key).carousel.lower = true;
                         }
 
-                        if (v.carousel.upper) map.get(key).carousel.upper = true;
-                        if (v.carousel.lower) map.get(key).carousel.lower = true;
+                        mediaVideos = [...map.values()];
+                        audit.influencer_returned = mediaVideos.length;
+
+                        console.info('================ MEDIA EXTRACTION DONE ================');
+                        console.info(`Images: ${mediaImages.length}`);
+                        console.info(`Influencer Videos: ${mediaVideos.length}`);
+                        console.info('Video modules:', videoModules);
+                        console.info('Audit:', audit);
+
+                        mediaVideos.forEach(v =>
+                            console.info('[FINAL][Influencer]', JSON.stringify(v, null, 2))
+                        );
+
+                    } catch (e) {
+                        console.error('MEDIA EXTRACTION FAILED:', e);
                     }
 
-                    mediaVideos = [...map.values()];
-                    audit.influencer_returned = mediaVideos.length;
 
-                    console.info('================ MEDIA EXTRACTION DONE ================');
-                    console.info(`Images: ${mediaImages.length}`);
-                    console.info(`Influencer Videos: ${mediaVideos.length}`);
-                    console.info('Video modules:', videoModules);
-                    console.info('Audit:', audit);
-
-                    mediaVideos.forEach(v =>
-                        console.info('[FINAL][Influencer]', JSON.stringify(v, null, 2))
-                    );
-
-                } catch (e) {
-                    console.error('MEDIA EXTRACTION FAILED:', e);
                 }
+
+
 
 
                 // --- Ratings & Reviews sampling
