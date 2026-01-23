@@ -188,7 +188,7 @@ function normalizeReviewsFlat(reviewsByStar) {
 
 const run = async () => {
 
-    const cutoffDate = new Date('2026-01-02T07:22:59Z');
+    const cutoffDate = new Date('2026-02-02T07:22:59Z');
     const now = new Date();
 
 
