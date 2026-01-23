@@ -1,5 +1,5 @@
 {
-  "runId": "manual-1769179645275",
+  "runId": "manual-1769181188374",
   "requestedAsins": [
     "B004W9NGJM"
   ],
@@ -25,23 +25,65 @@
         },
         "media": {
           "images": [
-            "https://m.media-amazon.com/images/G/01/HomeCustomProduct/360_icon_73x73v2._CB485971279_SS40_FMpng_RI_.png",
-            "https://m.media-amazon.com/images/I/311QKaPsuxL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/41LMYu+criL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/41Dq-O5vyqL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/41EiGNWsiwL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/512BO-il8NL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/419kU-gAQzL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/91dVm2ddTrL.SS40_BG85,85,85_BR-120_PKdp-play-icon-overlay__.jpg",
-            "https://m.media-amazon.com/images/I/61V2VEGYBZL._AC_SX522_.jpg"
+            "https://m.media-amazon.com/images/I/61V2VEGYBZL._AC_SL1500_.jpg",
+            "https://m.media-amazon.com/images/I/71zvCz1RYjL._AC_SL1500_.jpg",
+            "https://m.media-amazon.com/images/I/71bZkEmaCrL._AC_SL1500_.jpg",
+            "https://m.media-amazon.com/images/I/81H2Ws-gHKL._AC_SL1500_.jpg",
+            "https://m.media-amazon.com/images/I/81D+ZcIXj7L._AC_SL1500_.jpg",
+            "https://m.media-amazon.com/images/I/81f0-LuLQwL._AC_SL1500_.jpg"
           ],
-          "videos": []
+          "videos": [
+            {
+              "video_key": "d7970cf908d66409a75510d1b0c21d084896afba49c03578c25f94d1659fa26a",
+              "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/2dd2fef4-539a-4341-a6a3-2c4393f1dc4a/default.jobtemplate.hls.m3u8",
+              "creator_name": "🩷 Nicole&#39;s Favorite Things 🩷",
+              "creator_storefront_url": "https://www.amazon.com/shop/essential_oiler",
+              "carousel": {
+                "upper": true,
+                "lower": true
+              }
+            },
+            {
+              "video_key": "d8cf780db6ae8f8007ad6e86cfec85a91316ba9d2735ed2c581d929193b3ba13",
+              "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/ba362c01-ce9b-4b1d-a2a4-be23a9babf23/default.vertical.jobtemplate.hls.m3u8",
+              "creator_name": "Chelsea",
+              "creator_storefront_url": "https://www.amazon.com/shop/c.dub610",
+              "carousel": {
+                "upper": true,
+                "lower": true
+              }
+            },
+            {
+              "video_key": "f3acfcd2147fb1897edef1dc667f7054660f7137cc0fdaab392058f8526dd866",
+              "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/5472602a-0449-4d17-bdfe-2290a128a1e2/default.vertical.jobtemplate.hls.m3u8",
+              "creator_name": "Crystal",
+              "creator_storefront_url": "https://www.amazon.com/shop/influencer-4b6b4124",
+              "carousel": {
+                "upper": true,
+                "lower": true
+              }
+            },
+            {
+              "video_key": "f2e12741b742f2e71fb6ae1b0e62746dd117d503f316db45ba4583ab051a0dd9",
+              "hls_url": "https://m.media-amazon.com/images/S/vse-vms-transcoding-artifact-us-east-1-prod/acb83f1b-9422-49dd-8a12-7361708e8a3b/default.jobtemplate.hls.m3u8",
+              "creator_name": "✅ Tony&#39;s Reviews",
+              "creator_storefront_url": "https://www.amazon.com/shop/anatoliylashkul",
+              "carousel": {
+                "upper": true,
+                "lower": false
+              }
+            }
+          ]
         },
         "videoModules": {
-          "upper_present": false,
-          "lower_present": false
+          "upper_present": true,
+          "lower_present": true
         },
-        "audit": {},
+        "audit": {
+          "lower_found_total": 9,
+          "upper_found_total": 7,
+          "influencer_returned": 4
+        },
         "badges": {
           "is_prime": true,
           "is_best_seller": false,
@@ -124,11 +166,11 @@
         }
       },
       "meta": {
-        "scraped_at": "2026-01-23T14:47:42.413Z",
+        "scraped_at": "2026-01-23T15:13:30.300Z",
         "actor_version": "1.1"
       },
       "log": {
-        "start": "2026-01-23T14:47:25.541Z",
+        "start": "2026-01-23T15:13:08.661Z",
         "steps": [],
         "validation": {
           "valid": true,
@@ -136,13 +178,13 @@
         },
         "modules_failed": [],
         "total_reviews_scraped": 7,
-        "timing_ms": 16872,
+        "timing_ms": 21639,
         "sv_ingest": {
           "status": 200,
           "data": {
             "success": true,
             "message": "Product data ingested successfully",
-            "rawJsonId": "cmkqzwcrn0001jh044t20h2d3",
+            "rawJsonId": "cmkr0tchj0003jh04spo6zalx",
             "asin": "B004W9NGJM",
             "data_type": "product_full",
             "created": false,
@@ -153,8 +195,8 @@
     }
   ],
   "meta": {
-    "scraped_at": "2026-01-23T14:47:53.395Z",
+    "scraped_at": "2026-01-23T15:13:33.174Z",
     "actor_version": "1.1",
-    "timing_ms": 28120
+    "timing_ms": 24800
   }
 }

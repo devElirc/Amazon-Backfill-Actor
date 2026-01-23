@@ -1,23 +1,37 @@
-# Use Apify Node + Playwright image
-FROM apify/actor-node-playwright:20
+# ================================
+# Use Playwright base image matching local version
+# ================================
+FROM mcr.microsoft.com/playwright:v1.57.0-jammy
 
-# Switch to root temporarily to fix permissions and install dependencies
-USER root
-
+# ================================
 # Set working directory
+# ================================
 WORKDIR /usr/src/app
 
-# Copy all files
-COPY . ./
+# ================================
+# Copy package files first and install dependencies
+# This ensures Docker caching works efficiently
+# ================================
+COPY package.json package-lock.json ./
 
-# Give write access to the working directory
-RUN chmod -R 777 /usr/src/app
+# Install dependencies exactly as in package-lock.json
+RUN npm ci --only=production
 
-# Install production dependencies
-RUN npm install --only=prod
+# ================================
+# Copy the rest of the app
+# ================================
+COPY . .
 
-# Switch back to default user in the image
+# ================================
+# Ensure user pwuser has access
+# The base image already has 'pwuser'
+# ================================
+RUN chown -R pwuser:pwuser /usr/src/app
+
+# Switch to non-root user for security
 USER pwuser
 
+# ================================
 # Default command
+# ================================
 CMD ["node", "src/main.js"]
