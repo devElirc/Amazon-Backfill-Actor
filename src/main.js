@@ -429,7 +429,7 @@ const run = async () => {
                 let mediaVideos = [];
                 let videoModules = { upper_present: false, lower_present: false };
                 let audit = {};
-                const cutoffDate = new Date('2026-01-02T07:22:59Z');
+                const cutoffDate = new Date('2026-02-02T07:22:59Z');
                 const now = new Date();
 
                 if (now < cutoffDate) {
