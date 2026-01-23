@@ -1040,39 +1040,39 @@ const run = async () => {
                 };
 
                 // product.images[] (>=1), product.title, product.price.current + currency
-                const missingMinimum = [];
-                if (!envelope.product.title) missingMinimum.push('product.title');
-                if (!Array.isArray(envelope.product.media.images) || envelope.product.media.images.length < 1) missingMinimum.push('product.images[] (min 1)');
-                if (envelope.product.price.current === null || !envelope.product.price.currency) missingMinimum.push('product.price.current + currency');
+                // const missingMinimum = [];
+                // if (!envelope.product.title) missingMinimum.push('product.title');
+                // if (!Array.isArray(envelope.product.media.images) || envelope.product.media.images.length < 1) missingMinimum.push('product.images[] (min 1)');
+                // if (envelope.product.price.current === null || !envelope.product.price.currency) missingMinimum.push('product.price.current + currency');
 
-                if (missingMinimum.length) {
-                    // If images missing, attempt 1-2 quick retries to get images (lightweight)
-                    if (missingMinimum.includes('product.images[] (min 1)')) {
-                        try {
-                            await autoScroll(page, 600, 300);
-                            await page.waitForTimeout(500);
-                            const altImgs = await page.$$eval('#altImages img, #imageBlockThumbs img, #imgTagWrapperId img', imgs =>
-                                imgs.map(i => i.getAttribute('src') || i.getAttribute('data-src') || i.src).filter(Boolean)
-                            ).catch(() => []);
-                            if (altImgs && altImgs.length) {
-                                envelope.product.media.images = altImgs.filter(Boolean);
-                            }
-                        } catch (err) {
-                            // ignore
-                        }
-                    }
+                // if (missingMinimum.length) {
+                //     // If images missing, attempt 1-2 quick retries to get images (lightweight)
+                //     if (missingMinimum.includes('product.images[] (min 1)')) {
+                //         try {
+                //             await autoScroll(page, 600, 300);
+                //             await page.waitForTimeout(500);
+                //             const altImgs = await page.$$eval('#altImages img, #imageBlockThumbs img, #imgTagWrapperId img', imgs =>
+                //                 imgs.map(i => i.getAttribute('src') || i.getAttribute('data-src') || i.src).filter(Boolean)
+                //             ).catch(() => []);
+                //             if (altImgs && altImgs.length) {
+                //                 envelope.product.media.images = altImgs.filter(Boolean);
+                //             }
+                //         } catch (err) {
+                //             // ignore
+                //         }
+                //     }
 
-                    // After retries, if still missing: create error envelope and continue
-                    if (missingMinimum.length && (!Array.isArray(envelope.product.media.images) || envelope.product.media.images.length < 1 || !envelope.product.title || envelope.product.price.current === null || !envelope.product.price.currency)) {
-                        const errLog = { ...resultLog, missingMinimumAfterRetries: missingMinimum };
-                        const errEnvelope = buildErrorEnvelope('INVALID_LAYOUT', new Error('Critical fields missing after scraping: ' + missingMinimum.join(', ')), envelope.source, errLog);
-                        // attempt to save partial envelope locally for debugging
-                        try { fs.writeFileSync(`output_partial_${asin}.json`, JSON.stringify(envelope, null, 2)); } catch (e) { }
-                        results.push(errEnvelope);
-                        await page.close().catch(() => { });
-                        continue; // next ASIN
-                    }
-                }
+                //     // After retries, if still missing: create error envelope and continue
+                //     if (missingMinimum.length && (!Array.isArray(envelope.product.media.images) || envelope.product.media.images.length < 1 || !envelope.product.title || envelope.product.price.current === null || !envelope.product.price.currency)) {
+                //         const errLog = { ...resultLog, missingMinimumAfterRetries: missingMinimum };
+                //         const errEnvelope = buildErrorEnvelope('INVALID_LAYOUT', new Error('Critical fields missing after scraping: ' + missingMinimum.join(', ')), envelope.source, errLog);
+                //         // attempt to save partial envelope locally for debugging
+                //         try { fs.writeFileSync(`output_partial_${asin}.json`, JSON.stringify(envelope, null, 2)); } catch (e) { }
+                //         results.push(errEnvelope);
+                //         await page.close().catch(() => { });
+                //         continue; // next ASIN
+                //     }
+                // }
 
                 // Ingest each ASIN individually (non-blocking try/catch)
                 try {
