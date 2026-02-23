@@ -947,12 +947,12 @@ const run = async () => {
                             //     envelope.product.media.images = altImgs.filter(Boolean);
                             // }
 
-                            if (altImgs && altImgs.length) {
-                                const firstImage = altImgs.find(Boolean);
-                                if (firstImage) {
-                                    envelope.product.media.images = [firstImage]; // keep array format
-                                }
-                            }
+                            // if (altImgs && altImgs.length) {
+                            //     const firstImage = altImgs.find(Boolean);
+                            //     if (firstImage) {
+                            //         envelope.product.media.images = [firstImage]; // keep array format
+                            //     }
+                            // }
                         } catch (err) {
                             // ignore
                         }
