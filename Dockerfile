@@ -1,23 +1,17 @@
-# Use Apify Node + Playwright image
+# Use official Apify Node + Playwright image
 FROM apify/actor-node-playwright:20
-
-# Switch to root temporarily to fix permissions and install dependencies
-USER root
 
 # Set working directory
 WORKDIR /usr/src/app
 
-# Copy all files
+# Copy package files first (better Docker caching)
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm install --omit=dev
+
+# Copy the rest of the project
 COPY . ./
 
-# Give write access to the working directory
-RUN chmod -R 777 /usr/src/app
-
-# Install production dependencies
-RUN npm install --only=prod
-
-# Switch back to default user in the image
-USER pwuser
-
-# Default command
+# Start the Actor
 CMD ["node", "src/main.js"]
