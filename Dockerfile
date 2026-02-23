@@ -1,25 +1,17 @@
-# Use official Apify Node + Playwright image
-FROM apify/actor-node-playwright:20
+# Use the exact Playwright version required
+FROM mcr.microsoft.com/playwright:v1.57.0-noble
 
-# Switch to root to install dependencies
-USER root
-
+# Install Node 20 (image already contains Node)
 WORKDIR /usr/src/app
 
-# Copy package files first (better caching)
+# Copy package files first
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install --omit=dev
 
-# Copy the rest of the project
+# Copy rest of project
 COPY . ./
 
-# Fix ownership so the default user can access files
-RUN chown -R myuser:myuser /usr/src/app
-
-# Switch back to default Apify user
-USER myuser
-
-# Start the Actor
+# Start app
 CMD ["node", "src/main.js"]
