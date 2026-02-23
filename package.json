@@ -9,8 +9,9 @@
   "dependencies": {
     "apify": "^3.5.2",
     "axios": "^1.4.0",
-    "crawlee": "^3.15.3",
+    "crawlee": "3.15.3",
     "dotenv": "^17.2.3",
-    "minimist": "^1.2.7"
+    "minimist": "^1.2.7",
+    "playwright": "1.57.0"
   }
 }
