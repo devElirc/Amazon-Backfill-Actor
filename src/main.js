@@ -940,19 +940,19 @@ const run = async () => {
                         try {
                             await autoScroll(page, 600, 300);
                             await page.waitForTimeout(500);
-                            const altImgs = await page.$$eval('#altImages img, #imageBlockThumbs img, #imgTagWrapperId img', imgs =>
+                            const altImgs = await page.$$eval('#altImages img', imgs =>
                                 imgs.map(i => i.getAttribute('src') || i.getAttribute('data-src') || i.src).filter(Boolean)
                             ).catch(() => []);
                             // if (altImgs && altImgs.length) {
                             //     envelope.product.media.images = altImgs.filter(Boolean);
                             // }
 
-                            // if (altImgs && altImgs.length) {
-                            //     const firstImage = altImgs.find(Boolean);
-                            //     if (firstImage) {
-                            //         envelope.product.media.images = [firstImage]; // keep array format
-                            //     }
-                            // }
+                            if (altImgs && altImgs.length) {
+                                const firstImage = altImgs.find(Boolean);
+                                if (firstImage) {
+                                    envelope.product.media.images = [firstImage]; // keep array format
+                                }
+                            }
                         } catch (err) {
                             // ignore
                         }

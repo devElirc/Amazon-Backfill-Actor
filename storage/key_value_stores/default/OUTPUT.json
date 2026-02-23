@@ -1,92 +1,9 @@
 {
-  "runId": "manual-1771845432763",
+  "runId": "manual-1771853285244",
   "requestedAsins": [
-    "B0988B1ST6",
     "B09T5KL2KF"
   ],
   "results": [
-    {
-      "success": true,
-      "schema_version": "1.1",
-      "data_type": "product_full",
-      "source": {
-        "platform": "amazon",
-        "type": "apify_actor",
-        "actor": "amazon-backfill-actor",
-        "asin": "B0988B1ST6",
-        "product_url": "https://www.amazon.com/dp/B0988B1ST6"
-      },
-      "product": {
-        "asin": "B0988B1ST6",
-        "title": "Harman Kardon Onyx Studio 7 Portable Stereo Bluetooth Speaker - Black - (Renewed)",
-        "price": {
-          "current": 158.99,
-          "previous": 77.76,
-          "currency": "$"
-        },
-        "media": {
-          "images": [
-            "https://m.media-amazon.com/images/I/41N3OL9Tg5L._AC_US40_.jpg"
-          ],
-          "videos": []
-        },
-        "videoModules": {
-          "upper_present": false,
-          "lower_present": false
-        },
-        "audit": {},
-        "badges": {
-          "is_prime": true,
-          "is_best_seller": false,
-          "is_amazon_choice": true,
-          "has_coupon": false,
-          "has_limited_time_deal": true
-        },
-        "social_proof": {
-          "rating": {
-            "average": 4.5,
-            "count": 603
-          },
-          "reviews": [],
-          "reviews_meta": {
-            "source": "pdp_recent",
-            "reviews_found_total": 0,
-            "reviews_returned_total": 0
-          }
-        },
-        "sales": {
-          "units_sold": null,
-          "usually_kept": null
-        }
-      },
-      "meta": {
-        "scraped_at": "2026-02-23T11:17:23.937Z",
-        "actor_version": "1.1"
-      },
-      "log": {
-        "start": "2026-02-23T11:17:13.027Z",
-        "steps": [],
-        "validation": {
-          "valid": true,
-          "errors": []
-        },
-        "modules_failed": [],
-        "total_reviews_scraped": 0,
-        "timing_ms": 10910,
-        "sv_ingest": {
-          "status": 200,
-          "data": {
-            "success": true,
-            "message": "Product data ingested successfully",
-            "rawJsonId": "cmlz31a7x0000l504op0i52sb",
-            "asin": "B0988B1ST6",
-            "data_type": "product_full",
-            "created": false,
-            "updated": true
-          }
-        }
-      }
-    },
     {
       "success": true,
       "schema_version": "1.1",
@@ -108,7 +25,7 @@
         },
         "media": {
           "images": [
-            "https://m.media-amazon.com/images/I/312TV0l955L._AC_US40_.jpg"
+            "https://m.media-amazon.com/images/I/51B0KZh+kvL._AC_SX425_.jpg"
           ],
           "videos": []
         },
@@ -142,11 +59,11 @@
         }
       },
       "meta": {
-        "scraped_at": "2026-02-23T11:17:42.145Z",
+        "scraped_at": "2026-02-23T13:28:17.926Z",
         "actor_version": "1.1"
       },
       "log": {
-        "start": "2026-02-23T11:17:34.244Z",
+        "start": "2026-02-23T13:28:05.464Z",
         "steps": [],
         "validation": {
           "valid": true,
@@ -154,13 +71,13 @@
         },
         "modules_failed": [],
         "total_reviews_scraped": 0,
-        "timing_ms": 7901,
+        "timing_ms": 12462,
         "sv_ingest": {
           "status": 200,
           "data": {
             "success": true,
             "message": "Product data ingested successfully",
-            "rawJsonId": "cmlz31obj0001l504a3s9rfja",
+            "rawJsonId": "cmlz7pmzh0003ky04hqr70mnj",
             "asin": "B09T5KL2KF",
             "data_type": "product_full",
             "created": false,
@@ -171,8 +88,8 @@
     }
   ],
   "meta": {
-    "scraped_at": "2026-02-23T11:17:52.644Z",
+    "scraped_at": "2026-02-23T13:28:29.853Z",
     "actor_version": "1.1",
-    "timing_ms": 39881
+    "timing_ms": 24609
   }
 }

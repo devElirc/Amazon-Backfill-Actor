@@ -19,7 +19,7 @@
     },
     "media": {
       "images": [
-        "https://m.media-amazon.com/images/I/312TV0l955L._AC_US40_.jpg"
+        "https://m.media-amazon.com/images/I/51B0KZh+kvL._AC_SX425_.jpg"
       ],
       "videos": []
     },
@@ -53,11 +53,11 @@
     }
   },
   "meta": {
-    "scraped_at": "2026-02-23T11:17:42.145Z",
+    "scraped_at": "2026-02-23T13:28:17.926Z",
     "actor_version": "1.1"
   },
   "log": {
-    "start": "2026-02-23T11:17:34.244Z",
+    "start": "2026-02-23T13:28:05.464Z",
     "steps": [],
     "validation": {
       "valid": true,
@@ -65,13 +65,13 @@
     },
     "modules_failed": [],
     "total_reviews_scraped": 0,
-    "timing_ms": 7901,
+    "timing_ms": 12462,
     "sv_ingest": {
       "status": 200,
       "data": {
         "success": true,
         "message": "Product data ingested successfully",
-        "rawJsonId": "cmlz31obj0001l504a3s9rfja",
+        "rawJsonId": "cmlz7pmzh0003ky04hqr70mnj",
         "asin": "B09T5KL2KF",
         "data_type": "product_full",
         "created": false,
