@@ -1,7 +1,8 @@
 {
-  "runId": "manual-1769182035060",
+  "runId": "manual-1771843829290",
   "requestedAsins": [
-    "B004W9NGJM"
+    "B0988B1ST6",
+    "B09T5KL2KF"
   ],
   "results": [
     {
@@ -12,28 +13,102 @@
         "platform": "amazon",
         "type": "apify_actor",
         "actor": "amazon-backfill-actor",
-        "asin": "B004W9NGJM",
-        "product_url": "https://www.amazon.com/dp/B004W9NGJM"
+        "asin": "B0988B1ST6",
+        "product_url": "https://www.amazon.com/dp/B0988B1ST6"
       },
       "product": {
-        "asin": "B004W9NGJM",
-        "title": "THORNE - Thyroid Health Complex (Formerly Thyrocsin) - Thyroid Cofactors for Thyroid Function Support* - Vitamins B12, C & E, Ashwagandha, Iodine, Zinc, Selenium, Copper & L-Tyrosine - 60 Servings",
+        "asin": "B0988B1ST6",
+        "title": "Harman Kardon Onyx Studio 7 Portable Stereo Bluetooth Speaker - Black - (Renewed)",
         "price": {
-          "current": 40,
-          "previous": 0.33,
+          "current": 158.99,
+          "previous": 229.99,
           "currency": "$"
         },
         "media": {
           "images": [
-            "https://m.media-amazon.com/images/G/01/HomeCustomProduct/360_icon_73x73v2._CB485971279_SS40_FMpng_RI_.png",
-            "https://m.media-amazon.com/images/I/311QKaPsuxL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/41LMYu+criL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/41Dq-O5vyqL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/41EiGNWsiwL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/512BO-il8NL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/419kU-gAQzL._AC_US40_.jpg",
-            "https://m.media-amazon.com/images/I/91dVm2ddTrL.SS40_BG85,85,85_BR-120_PKdp-play-icon-overlay__.jpg",
-            "https://m.media-amazon.com/images/I/61V2VEGYBZL._AC_SX522_.jpg"
+            "https://m.media-amazon.com/images/I/41N3OL9Tg5L._AC_US40_.jpg"
+          ],
+          "videos": []
+        },
+        "videoModules": {
+          "upper_present": false,
+          "lower_present": false
+        },
+        "audit": {},
+        "badges": {
+          "is_prime": true,
+          "is_best_seller": false,
+          "is_amazon_choice": true,
+          "has_coupon": false,
+          "has_limited_time_deal": true
+        },
+        "social_proof": {
+          "rating": {
+            "average": 4.5,
+            "count": 603
+          },
+          "reviews": [],
+          "reviews_meta": {
+            "source": "pdp_recent",
+            "reviews_found_total": 0,
+            "reviews_returned_total": 0
+          }
+        },
+        "sales": {
+          "units_sold": null,
+          "usually_kept": null
+        }
+      },
+      "meta": {
+        "scraped_at": "2026-02-23T10:50:40.770Z",
+        "actor_version": "1.1"
+      },
+      "log": {
+        "start": "2026-02-23T10:50:29.562Z",
+        "steps": [],
+        "validation": {
+          "valid": true,
+          "errors": []
+        },
+        "modules_failed": [],
+        "total_reviews_scraped": 0,
+        "timing_ms": 11208,
+        "sv_ingest": {
+          "status": 200,
+          "data": {
+            "success": true,
+            "message": "Product data ingested successfully",
+            "rawJsonId": "cmlz22wd70002l5048ebtce1t",
+            "asin": "B0988B1ST6",
+            "data_type": "product_full",
+            "created": false,
+            "updated": true
+          }
+        }
+      }
+    },
+    {
+      "success": true,
+      "schema_version": "1.1",
+      "data_type": "product_full",
+      "source": {
+        "platform": "amazon",
+        "type": "apify_actor",
+        "actor": "amazon-backfill-actor",
+        "asin": "B09T5KL2KF",
+        "product_url": "https://www.amazon.com/dp/B09T5KL2KF"
+      },
+      "product": {
+        "asin": "B09T5KL2KF",
+        "title": "JBL Tune 510BT: Wireless On-Ear Headphones with Purebass Sound - White",
+        "price": {
+          "current": 31.99,
+          "previous": 49.95,
+          "currency": "$"
+        },
+        "media": {
+          "images": [
+            "https://m.media-amazon.com/images/I/312TV0l955L._AC_US40_.jpg"
           ],
           "videos": []
         },
@@ -52,70 +127,13 @@
         "social_proof": {
           "rating": {
             "average": 4.6,
-            "count": 1059
+            "count": 1444
           },
-          "reviews": [
-            {
-              "reviewer": "J. E. Alexander",
-              "rating": 4,
-              "title": "Plan on 2 doses per day.",
-              "body": "Know that you can start with 2 tablets taken once a day on an empty stomach (preferably just after rising to start your day); but you will need to advance to taking  a second dose on an empty stomach later in the day, an hour before eating.I've learned that second dose  is veryimportant.",
-              "date": "2025-09-08",
-              "verified_purchase": true
-            },
-            {
-              "reviewer": "Martin Feustel",
-              "rating": 4,
-              "title": "Seems to work great so far",
-              "body": "Seems to work great so far",
-              "date": "2025-08-05",
-              "verified_purchase": true
-            },
-            {
-              "reviewer": "Polderman Family",
-              "rating": 5,
-              "title": "Game Changer for Hashimotos",
-              "body": "This stuff is amazing and feels like the missing piece to my thyroid health journey. Diagnosed recently with Hashimotos and after struggling with intense fatigue, I noticed a huge difference in energy within 48 hours of starting this. Will be coupling it with thyroid med going forward and hope to see even more improvement in thryoid related symptoms. But I can't imagine not taking this!",
-              "date": "2025-12-06",
-              "verified_purchase": true
-            },
-            {
-              "reviewer": "Jacquelyn Baldridge",
-              "rating": 5,
-              "title": "Changed my life",
-              "body": "I’m turning 40 and I have been off synthroid medicine (synthetic) for 1 year supplementing with Raw Thyroid pig’s hormones and still felt something was a little off.I added these minerals to my regiments and I feel like my dormant thyroid is now active and working. My body is burning and working, digestion is on track, and I lost 3lbs in 2 weeks combined with diet and exercise. Coming from someone that never looses weight!They are not just an energy booster, they are essential minerals that your thyroid needs.What a game changer for my health!I’m so happy and grateful for this company!I will be getting my labs done next month to see how I’m doing 😁",
-              "date": "2025-02-16",
-              "verified_purchase": true
-            },
-            {
-              "reviewer": "Mallory M",
-              "rating": 5,
-              "title": "Worked for me!",
-              "body": "Last spring I got labs done that showed my thyroid was borderline hypothyroid. I got this supplement to see if it would help. I started by just taking 1 pill per day to adjust my body to these new vitamins. I ended up only using it for 4 months before I got pregnant and stopped it. I had labs done again and my thyroid was well within the normal range!  This alongside a balanced diet I would say really helped!",
-              "date": "2025-10-22",
-              "verified_purchase": true
-            },
-            {
-              "reviewer": "Angel E.",
-              "rating": 5,
-              "title": "So many benefits!",
-              "body": "This product! Currently, I’m 40 years old. I just had a baby about 2 1/2 years ago. Since the birth, my energy and mental state, depression, weight gain, everything has been an exhausting journey. I started to really deep dive because my sibling and mother was recently diagnosed with Hashimoto’s hypothyroid disorder, and I started looking into symptoms. I haven’t been formally diagnosed but borderline, however I started taking this Thyrocsin by recommendation to see if it helped at all, and to my surprise it has! I’ve been taking it for just shy of a month religiously. Things I’ve noticed is I have very regular bowel movements, which has never happened in the history of my life. I have energy and it’s not cracked out energy but focus, concentration, and doing my daily chores and just regular responsibilities that typically would wear me out to exhaustion, I have energy and can stay awake till 11 PM  or later with no problem. Previously I would be able to fall asleep as soon as I sat down.  In addition I have lost about 6 pounds. Not sure if it’s due to increased energy levels increased bowel movements or if it just has helped overall with weight, but that’s a plus and I’ll take it! I also have found that my body temperature is more controlled. I’m not constantly freezing throughout the day bundled up in sweatshirts and any amount of layers I can get a hold of when the temperature in my house is 73. An added benefit that I’ve struggled with since my postpartum has been my sex drive. I found that it has increased and it definitely is quite surprising. Especially since I wasn’t taking it for that at all. Overall, I am a loyal customer to Thorne supplements, but this has definitely taken the cake!",
-              "date": "2026-01-15",
-              "verified_purchase": true
-            },
-            {
-              "reviewer": "DoritaLynn",
-              "rating": 5,
-              "title": "Excellent",
-              "body": "Excellent product",
-              "date": "2025-11-23",
-              "verified_purchase": true
-            }
-          ],
+          "reviews": [],
           "reviews_meta": {
             "source": "pdp_recent",
-            "reviews_found_total": 7,
-            "reviews_returned_total": 7
+            "reviews_found_total": 0,
+            "reviews_returned_total": 0
           }
         },
         "sales": {
@@ -124,26 +142,26 @@
         }
       },
       "meta": {
-        "scraped_at": "2026-01-23T15:27:31.287Z",
+        "scraped_at": "2026-02-23T10:50:58.445Z",
         "actor_version": "1.1"
       },
       "log": {
-        "start": "2026-01-23T15:27:15.474Z",
+        "start": "2026-02-23T10:50:51.152Z",
         "steps": [],
         "validation": {
           "valid": true,
           "errors": []
         },
         "modules_failed": [],
-        "total_reviews_scraped": 7,
-        "timing_ms": 15813,
+        "total_reviews_scraped": 0,
+        "timing_ms": 7293,
         "sv_ingest": {
           "status": 200,
           "data": {
             "success": true,
             "message": "Product data ingested successfully",
-            "rawJsonId": "cmkr1bk3p000qjh04mu3ngmhs",
-            "asin": "B004W9NGJM",
+            "rawJsonId": "cmlz239q60003l504svg0reno",
+            "asin": "B09T5KL2KF",
             "data_type": "product_full",
             "created": false,
             "updated": true
@@ -153,8 +171,8 @@
     }
   ],
   "meta": {
-    "scraped_at": "2026-01-23T15:27:42.322Z",
+    "scraped_at": "2026-02-23T10:51:07.409Z",
     "actor_version": "1.1",
-    "timing_ms": 27262
+    "timing_ms": 38119
   }
 }

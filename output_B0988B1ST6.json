@@ -6,20 +6,20 @@
     "platform": "amazon",
     "type": "apify_actor",
     "actor": "amazon-backfill-actor",
-    "asin": "B004W9NGJM",
-    "product_url": "https://www.amazon.com/dp/B004W9NGJM"
+    "asin": "B0988B1ST6",
+    "product_url": "https://www.amazon.com/dp/B0988B1ST6"
   },
   "product": {
-    "asin": "B004W9NGJM",
-    "title": "THORNE - Thyroid Health Complex (Formerly Thyrocsin) - Thyroid Cofactors for Thyroid Function Support* - Vitamins B12, C & E, Ashwagandha, Iodine, Zinc, Selenium, Copper & L-Tyrosine - 60 Servings",
+    "asin": "B0988B1ST6",
+    "title": "Harman Kardon Onyx Studio 7 Portable Stereo Bluetooth Speaker - Black - (Renewed)",
     "price": {
-      "current": 40,
-      "previous": 0.33,
+      "current": 158.99,
+      "previous": 229.99,
       "currency": "$"
     },
     "media": {
       "images": [
-        "https://m.media-amazon.com/images/I/61V2VEGYBZL._AC_SX522_.jpg"
+        "https://m.media-amazon.com/images/I/41N3OL9Tg5L._AC_US40_.jpg"
       ],
       "videos": []
     },
@@ -37,8 +37,8 @@
     },
     "social_proof": {
       "rating": {
-        "average": 4.6,
-        "count": 1064
+        "average": 4.5,
+        "count": 603
       },
       "reviews": [],
       "reviews_meta": {
@@ -53,11 +53,11 @@
     }
   },
   "meta": {
-    "scraped_at": "2026-02-23T10:45:54.983Z",
+    "scraped_at": "2026-02-23T10:50:40.770Z",
     "actor_version": "1.1"
   },
   "log": {
-    "start": "2026-02-23T10:45:42.834Z",
+    "start": "2026-02-23T10:50:29.562Z",
     "steps": [],
     "validation": {
       "valid": true,
@@ -65,14 +65,14 @@
     },
     "modules_failed": [],
     "total_reviews_scraped": 0,
-    "timing_ms": 12149,
+    "timing_ms": 11208,
     "sv_ingest": {
       "status": 200,
       "data": {
         "success": true,
         "message": "Product data ingested successfully",
-        "rawJsonId": "cmlz1wt8i0006jr04w6qejuoh",
-        "asin": "B004W9NGJM",
+        "rawJsonId": "cmlz22wd70002l5048ebtce1t",
+        "asin": "B0988B1ST6",
         "data_type": "product_full",
         "created": false,
         "updated": true
