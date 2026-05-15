@@ -188,8 +188,6 @@ function normalizeReviewsFlat(reviewsByStar) {
 
 const run = async () => {
 
-
-
     await Actor.init();
     console.log('[run] Actor init @', NOW());
 
@@ -425,303 +423,294 @@ const run = async () => {
 
 
 
+
                 let mediaImages = [];
                 let mediaVideos = [];
                 let videoModules = { upper_present: false, lower_present: false };
-                let audit = {};
-                const cutoffDate = new Date('2026-02-02T07:22:59Z');
-                const now = new Date();
 
-                if (now < cutoffDate) {
+                try {
+                    await page.waitForSelector('#altImages', { timeout: 1000 });
+                    const thumbnails = await page.$$('#altImages .imageThumbnail');
 
-                    try {
-                        await page.waitForSelector('#altImages', { timeout: 1000 });
-                        const thumbnails = await page.$$('#altImages .imageThumbnail');
-
-                        for (let i = 0; i < thumbnails.length; i++) {
-                            const thumb = thumbnails[i];
-                            await thumb.click();
-                            await page.waitForTimeout(100); // wait for main image to update
-                        }
-                    } catch (err) {
-                        console.warn('No thumbnails to click or timeout:', err.message);
+                    for (let i = 0; i < thumbnails.length; i++) {
+                        const thumb = thumbnails[i];
+                        await thumb.click();
+                        await page.waitForTimeout(100); // wait for main image to update
                     }
-
-                    // ===============================
-                    // 2. EXTRACT IMAGES
-                    // ===============================
-                    const imagesData = await page.$$eval(
-                        'ul.a-horizontal.list.maintain-height li.image',
-                        lis => lis
-                            .map(li => {
-                                const img = li.querySelector('img');
-                                return img ? img.getAttribute('data-old-hires') || img.src : null;
-                            })
-                            .filter(Boolean)
-                    );
-
-                    if (imagesData.length > 0) mediaImages = imagesData;
-
-                    // audit counters
-                    audit = {
-                        lower_found_total: 0,
-                        upper_found_total: 0,
-                        influencer_returned: 0,
-                    };
-
-                    console.info('================ MEDIA EXTRACTION START ================');
-
-                    try {
-
-                        await page.mouse.move(100, 100);
-                        await page.mouse.wheel(0, 2000);
-                        await page.waitForTimeout(1000);
-
-                        const lowerVideosRaw = await page.$$eval(
-                            'div.a-carousel-viewport ol.a-carousel li.a-carousel-card.vse-video-card div.vse-video-item',
-                            items =>
-                                items.map((item, index) => {
-                                    const hls = item.dataset.videoUrl;
-                                    if (!hls) return null;
-
-                                    return {
-                                        index,
-                                        hls_url: hls,
-                                        title:
-                                            item.dataset.title ||
-                                            item.querySelector('[data-element-id="video-title"]')
-                                                ?.innerText?.trim() ||
-                                            null,
-                                        duration:
-                                            item.dataset.duration ||
-                                            item.querySelector('.vse-video-duration')
-                                                ?.innerText?.trim() ||
-                                            null,
-                                        creator_name:
-                                            item.dataset.vendorName ||
-                                            item.querySelector('[data-element-id="video-vendor-name"]')
-                                                ?.innerText?.trim() ||
-                                            null,
-                                        vendor_code: item.dataset.vendorCode || null,
-                                        creator_type: item.dataset.creatorType || null,
-                                        video_age: item.dataset.videoAge || null,
-                                    };
-                                }).filter(Boolean)
-                        ).catch(() => []);
-
-                        audit.lower_found_total = lowerVideosRaw.length;
-
-                        const lowerInfluencerVideos = lowerVideosRaw
-                            .map(v => {
-                                // STRICT influencer rule
-                                if (
-                                    v.creator_type !== 'Influencer' ||
-                                    !v.vendor_code ||
-                                    !v.vendor_code.includes(':shop')
-                                ) {
-                                    return null;
-                                }
-
-                                const storefront =
-                                    `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
-
-                                if (!v.creator_name || !storefront) return null;
-
-                                return {
-                                    source: 'lower',
-                                    index: v.index,
-                                    hls_url: v.hls_url,
-                                    // title: v.title,
-                                    // duration: v.duration,
-                                    creator_name: v.creator_name,
-                                    creator_storefront_url: storefront,
-                                    // video_age: v.video_age,
-                                    carousel: { lower: true, upper: false },
-                                };
-                            })
-                            .filter(Boolean);
-
-                        if (lowerInfluencerVideos.length) {
-                            videoModules.lower_present = true;
-                            lowerInfluencerVideos.forEach(v =>
-                                console.info('[Lower][Influencer]', JSON.stringify(v, null, 2))
-                            );
-                            mediaVideos.push(...lowerInfluencerVideos);
-                        }
-
-                        console.info(
-                            `[Lower] Found ${audit.lower_found_total}, Influencer returned ${lowerInfluencerVideos.length}`
-                        );
-
-                        // =====================================================
-                        // UPPER VIDEO MODAL — INFLUENCER ONLY
-                        // =====================================================
-
-                        await page.mouse.move(100, 100);
-                        await page.mouse.wheel(0, 2000);
-                        await page.waitForTimeout(1000);
-                        console.info('[Upper] Attempting to open video modal...');
-
-                        const clicked = await page.evaluate(() => {
-                            const el =
-                                document.querySelector('li.videoThumbnail') ||
-                                document.querySelector('li[class*="videoThumbnail"]');
-                            if (!el) return false;
-                            el.scrollIntoView({ block: 'center' });
-                            el.click();
-                            return true;
-                        });
-
-                        if (clicked) {
-                            let ready = false;
-                            for (let i = 0; i < 20; i++) {
-                                const exists = await page.evaluate(() =>
-                                    document.querySelector(
-                                        '[id^="detailpage-imageblock-related-videos"]'
-                                    )
-                                );
-                                if (exists) {
-                                    ready = true;
-                                    break;
-                                }
-                                await page.waitForTimeout(400);
-                            }
-
-                            if (ready) {
-                                const container = await page.$(
-                                    '[id^="detailpage-imageblock-related-videos"]'
-                                );
-
-                                if (container) {
-                                    console.info('[Upper] Related videos container detected');
-
-                                    const upperVideosRaw = await page.evaluate(el =>
-                                        Array.from(el.querySelectorAll('.vse-video-item'))
-                                            .map((item, index) => {
-                                                const hls = item.dataset.videoUrl;
-                                                if (!hls) return null;
-
-                                                return {
-                                                    index,
-                                                    hls_url: hls,
-                                                    title:
-                                                        item.dataset.title ||
-                                                        item.querySelector('[data-element-id="video-title"]')
-                                                            ?.innerText?.trim() ||
-                                                        null,
-                                                    duration:
-                                                        item.dataset.duration ||
-                                                        item.querySelector('.vse-video-duration')
-                                                            ?.innerText?.trim() ||
-                                                        null,
-                                                    creator_name:
-                                                        item.dataset.vendorName ||
-                                                        item.querySelector('[data-element-id="video-vendor-name"]')
-                                                            ?.innerText?.trim() ||
-                                                        null,
-                                                    vendor_code: item.dataset.vendorCode || null,
-                                                    creator_type: item.dataset.creatorType || null,
-                                                    video_age: item.dataset.videoAge || null,
-                                                };
-                                            })
-                                            .filter(Boolean)
-                                        , container);
-
-                                    audit.upper_found_total = upperVideosRaw.length;
-
-                                    const upperInfluencerVideos = upperVideosRaw
-                                        .map(v => {
-                                            if (
-                                                v.creator_type !== 'Influencer' ||
-                                                !v.vendor_code ||
-                                                !v.vendor_code.includes(':shop')
-                                            ) {
-                                                return null;
-                                            }
-
-                                            const storefront =
-                                                `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
-
-                                            if (!v.creator_name || !storefront) return null;
-
-                                            return {
-                                                source: 'upper',
-                                                index: v.index,
-                                                hls_url: v.hls_url,
-                                                // title: v.title,
-                                                // duration: v.duration,
-                                                creator_name: v.creator_name,
-                                                creator_storefront_url: storefront,
-                                                // video_age: v.video_age,
-                                                carousel: { upper: true, lower: false },
-                                            };
-                                        })
-                                        .filter(Boolean);
-
-                                    if (upperInfluencerVideos.length) {
-                                        videoModules.upper_present = true;
-                                        upperInfluencerVideos.forEach(v =>
-                                            console.info('[Upper][Influencer]', JSON.stringify(v, null, 2))
-                                        );
-                                        mediaVideos.push(...upperInfluencerVideos);
-                                    }
-
-                                    console.info(
-                                        `[Upper] Found ${audit.upper_found_total}, Influencer returned ${upperInfluencerVideos.length}`
-                                    );
-                                }
-                            }
-                        }
-
-                        // =====================================================
-                        // DEDUPE (HLS URL) + FINAL SHAPE
-                        // =====================================================
-                        const map = new Map();
-
-                        for (const v of mediaVideos) {
-                            const key = crypto
-                                .createHash('sha256')
-                                .update(v.hls_url)
-                                .digest('hex');
-
-                            if (!map.has(key)) {
-                                map.set(key, {
-                                    video_key: key,
-                                    hls_url: v.hls_url,
-                                    title: v.title,
-                                    duration: v.duration,
-                                    creator_name: v.creator_name,
-                                    creator_storefront_url: v.creator_storefront_url,
-                                    video_age: v.video_age,
-                                    carousel: { upper: false, lower: false },
-                                });
-                            }
-
-                            if (v.carousel.upper) map.get(key).carousel.upper = true;
-                            if (v.carousel.lower) map.get(key).carousel.lower = true;
-                        }
-
-                        mediaVideos = [...map.values()];
-                        audit.influencer_returned = mediaVideos.length;
-
-                        console.info('================ MEDIA EXTRACTION DONE ================');
-                        console.info(`Images: ${mediaImages.length}`);
-                        console.info(`Influencer Videos: ${mediaVideos.length}`);
-                        console.info('Video modules:', videoModules);
-                        console.info('Audit:', audit);
-
-                        mediaVideos.forEach(v =>
-                            console.info('[FINAL][Influencer]', JSON.stringify(v, null, 2))
-                        );
-
-                    } catch (e) {
-                        console.error('MEDIA EXTRACTION FAILED:', e);
-                    }
-
-
+                } catch (err) {
+                    console.warn('No thumbnails to click or timeout:', err.message);
                 }
 
+                // ===============================
+                // 2. EXTRACT IMAGES
+                // ===============================
+                const imagesData = await page.$$eval(
+                    'ul.a-horizontal.list.maintain-height li.image',
+                    lis => lis
+                        .map(li => {
+                            const img = li.querySelector('img');
+                            return img ? img.getAttribute('data-old-hires') || img.src : null;
+                        })
+                        .filter(Boolean)
+                );
 
+                if (imagesData.length > 0) mediaImages = imagesData;
+
+                // audit counters
+                let audit = {
+                    lower_found_total: 0,
+                    upper_found_total: 0,
+                    influencer_returned: 0,
+                };
+
+                console.info('================ MEDIA EXTRACTION START ================');
+
+                try {
+
+                    await page.mouse.move(100, 100);
+                    await page.mouse.wheel(0, 2000);
+                    await page.waitForTimeout(1000);
+
+                    const lowerVideosRaw = await page.$$eval(
+                        'div.a-carousel-viewport ol.a-carousel li.a-carousel-card.vse-video-card div.vse-video-item',
+                        items =>
+                            items.map((item, index) => {
+                                const hls = item.dataset.videoUrl;
+                                if (!hls) return null;
+
+                                return {
+                                    index,
+                                    hls_url: hls,
+                                    title:
+                                        item.dataset.title ||
+                                        item.querySelector('[data-element-id="video-title"]')
+                                            ?.innerText?.trim() ||
+                                        null,
+                                    duration:
+                                        item.dataset.duration ||
+                                        item.querySelector('.vse-video-duration')
+                                            ?.innerText?.trim() ||
+                                        null,
+                                    creator_name:
+                                        item.dataset.vendorName ||
+                                        item.querySelector('[data-element-id="video-vendor-name"]')
+                                            ?.innerText?.trim() ||
+                                        null,
+                                    vendor_code: item.dataset.vendorCode || null,
+                                    creator_type: item.dataset.creatorType || null,
+                                    video_age: item.dataset.videoAge || null,
+                                };
+                            }).filter(Boolean)
+                    ).catch(() => []);
+
+                    audit.lower_found_total = lowerVideosRaw.length;
+
+                    const lowerInfluencerVideos = lowerVideosRaw
+                        .map(v => {
+                            // STRICT influencer rule
+                            if (
+                                v.creator_type !== 'Influencer' ||
+                                !v.vendor_code ||
+                                !v.vendor_code.includes(':shop')
+                            ) {
+                                return null;
+                            }
+
+                            const storefront =
+                                `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
+
+                            if (!v.creator_name || !storefront) return null;
+
+                            return {
+                                source: 'lower',
+                                index: v.index,
+                                hls_url: v.hls_url,
+                                // title: v.title,
+                                // duration: v.duration,
+                                creator_name: v.creator_name,
+                                creator_storefront_url: storefront,
+                                // video_age: v.video_age,
+                                carousel: { lower: true, upper: false },
+                            };
+                        })
+                        .filter(Boolean);
+
+                    if (lowerInfluencerVideos.length) {
+                        videoModules.lower_present = true;
+                        lowerInfluencerVideos.forEach(v =>
+                            console.info('[Lower][Influencer]', JSON.stringify(v, null, 2))
+                        );
+                        mediaVideos.push(...lowerInfluencerVideos);
+                    }
+
+                    console.info(
+                        `[Lower] Found ${audit.lower_found_total}, Influencer returned ${lowerInfluencerVideos.length}`
+                    );
+
+                    // =====================================================
+                    // UPPER VIDEO MODAL — INFLUENCER ONLY
+                    // =====================================================
+
+                    await page.mouse.move(100, 100);
+                    await page.mouse.wheel(0, 2000);
+                    await page.waitForTimeout(1000);
+                    console.info('[Upper] Attempting to open video modal...');
+
+                    const clicked = await page.evaluate(() => {
+                        const el =
+                            document.querySelector('li.videoThumbnail') ||
+                            document.querySelector('li[class*="videoThumbnail"]');
+                        if (!el) return false;
+                        el.scrollIntoView({ block: 'center' });
+                        el.click();
+                        return true;
+                    });
+
+                    if (clicked) {
+                        let ready = false;
+                        for (let i = 0; i < 20; i++) {
+                            const exists = await page.evaluate(() =>
+                                document.querySelector(
+                                    '[id^="detailpage-imageblock-related-videos"]'
+                                )
+                            );
+                            if (exists) {
+                                ready = true;
+                                break;
+                            }
+                            await page.waitForTimeout(400);
+                        }
+
+                        if (ready) {
+                            const container = await page.$(
+                                '[id^="detailpage-imageblock-related-videos"]'
+                            );
+
+                            if (container) {
+                                console.info('[Upper] Related videos container detected');
+
+                                const upperVideosRaw = await page.evaluate(el =>
+                                    Array.from(el.querySelectorAll('.vse-video-item'))
+                                        .map((item, index) => {
+                                            const hls = item.dataset.videoUrl;
+                                            if (!hls) return null;
+
+                                            return {
+                                                index,
+                                                hls_url: hls,
+                                                title:
+                                                    item.dataset.title ||
+                                                    item.querySelector('[data-element-id="video-title"]')
+                                                        ?.innerText?.trim() ||
+                                                    null,
+                                                duration:
+                                                    item.dataset.duration ||
+                                                    item.querySelector('.vse-video-duration')
+                                                        ?.innerText?.trim() ||
+                                                    null,
+                                                creator_name:
+                                                    item.dataset.vendorName ||
+                                                    item.querySelector('[data-element-id="video-vendor-name"]')
+                                                        ?.innerText?.trim() ||
+                                                    null,
+                                                vendor_code: item.dataset.vendorCode || null,
+                                                creator_type: item.dataset.creatorType || null,
+                                                video_age: item.dataset.videoAge || null,
+                                            };
+                                        })
+                                        .filter(Boolean)
+                                    , container);
+
+                                audit.upper_found_total = upperVideosRaw.length;
+
+                                const upperInfluencerVideos = upperVideosRaw
+                                    .map(v => {
+                                        if (
+                                            v.creator_type !== 'Influencer' ||
+                                            !v.vendor_code ||
+                                            !v.vendor_code.includes(':shop')
+                                        ) {
+                                            return null;
+                                        }
+
+                                        const storefront =
+                                            `https://www.amazon.com/shop/${v.vendor_code.split(':')[0]}`;
+
+                                        if (!v.creator_name || !storefront) return null;
+
+                                        return {
+                                            source: 'upper',
+                                            index: v.index,
+                                            hls_url: v.hls_url,
+                                            // title: v.title,
+                                            // duration: v.duration,
+                                            creator_name: v.creator_name,
+                                            creator_storefront_url: storefront,
+                                            // video_age: v.video_age,
+                                            carousel: { upper: true, lower: false },
+                                        };
+                                    })
+                                    .filter(Boolean);
+
+                                if (upperInfluencerVideos.length) {
+                                    videoModules.upper_present = true;
+                                    upperInfluencerVideos.forEach(v =>
+                                        console.info('[Upper][Influencer]', JSON.stringify(v, null, 2))
+                                    );
+                                    mediaVideos.push(...upperInfluencerVideos);
+                                }
+
+                                console.info(
+                                    `[Upper] Found ${audit.upper_found_total}, Influencer returned ${upperInfluencerVideos.length}`
+                                );
+                            }
+                        }
+                    }
+
+                    // =====================================================
+                    // DEDUPE (HLS URL) + FINAL SHAPE
+                    // =====================================================
+                    const map = new Map();
+
+                    for (const v of mediaVideos) {
+                        const key = crypto
+                            .createHash('sha256')
+                            .update(v.hls_url)
+                            .digest('hex');
+
+                        if (!map.has(key)) {
+                            map.set(key, {
+                                video_key: key,
+                                hls_url: v.hls_url,
+                                title: v.title,
+                                duration: v.duration,
+                                creator_name: v.creator_name,
+                                creator_storefront_url: v.creator_storefront_url,
+                                video_age: v.video_age,
+                                carousel: { upper: false, lower: false },
+                            });
+                        }
+
+                        if (v.carousel.upper) map.get(key).carousel.upper = true;
+                        if (v.carousel.lower) map.get(key).carousel.lower = true;
+                    }
+
+                    mediaVideos = [...map.values()];
+                    audit.influencer_returned = mediaVideos.length;
+
+                    console.info('================ MEDIA EXTRACTION DONE ================');
+                    console.info(`Images: ${mediaImages.length}`);
+                    console.info(`Influencer Videos: ${mediaVideos.length}`);
+                    console.info('Video modules:', videoModules);
+                    console.info('Audit:', audit);
+
+                    mediaVideos.forEach(v =>
+                        console.info('[FINAL][Influencer]', JSON.stringify(v, null, 2))
+                    );
+
+                } catch (e) {
+                    console.error('MEDIA EXTRACTION FAILED:', e);
+                }
 
 
                 // --- Ratings & Reviews sampling
@@ -752,6 +741,117 @@ const run = async () => {
                 }
 
                 const reviewsByStar = { '1': [], '2': [], '3': [], '4': [], '5': [] };
+
+                try {
+                    const rawReviews = await page.$$eval(
+                        'li[data-hook="review"], div[data-hook="cr-widget-FocalReviews"] li[data-hook="review"]',
+                        nodes => {
+                            return nodes.map(n => {
+                                const ratingText =
+                                    n.querySelector('[data-hook="review-star-rating"] .a-icon-alt')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('[data-hook="cmps-review-star-rating"] .a-icon-alt')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    null;
+
+                                let title = null;
+
+                                // Foreign reviews (original language)
+                                title =
+                                    n.querySelector('[data-hook="review-title"] .cr-original-review-content')
+                                        ?.textContent
+                                        ?.trim() || null;
+
+                                // Standard US reviews (anchor → last meaningful span)
+                                if (!title) {
+                                    const titleAnchor = n.querySelector('a[data-hook="review-title"]');
+                                    if (titleAnchor) {
+                                        const spans = Array.from(titleAnchor.querySelectorAll('span'))
+                                            .map(s => s.textContent?.trim())
+                                            .filter(Boolean);
+                                        title = spans.length ? spans[spans.length - 1] : null;
+                                    }
+                                }
+
+                                // Final fallback (very rare layouts)
+                                if (!title) {
+                                    title = n
+                                        .querySelector('[data-hook="review-title"]')
+                                        ?.textContent
+                                        ?.trim() || null;
+                                }
+
+                                // Guard: prevent rating text from becoming title
+                                if (title && ratingText && title.includes('out of 5 stars')) {
+                                    title = null;
+                                }
+
+                                const body =
+                                    n.querySelector('[data-hook="review-body"] .cr-original-review-content')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('[data-hook="review-body"] span')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('.review-text-content span')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    n.querySelector('.reviewText')
+                                        ?.textContent
+                                        ?.trim() ||
+                                    null;
+
+                                return {
+                                    reviewer:
+                                        n.querySelector('.a-profile-name')
+                                            ?.textContent
+                                            ?.trim() || null,
+                                    ratingText,
+                                    title,
+                                    date:
+                                        n.querySelector('[data-hook="review-date"]')
+                                            ?.textContent
+                                            ?.trim() || null,
+                                    body,
+                                    verified:
+                                        n.querySelector('[data-hook="avp-badge-linkless"]')
+                                            ?.textContent
+                                            ?.trim() || null,
+                                };
+                            });
+                        }
+                    ).catch(() => []);
+
+                    if (Array.isArray(rawReviews)) {
+                        for (const rv of rawReviews) {
+                            if (!rv.ratingText) continue;
+
+                            // Locale-safe rating parse
+                            const mm = rv.ratingText.match(/([0-9]+(?:[.,][0-9]+)?)/);
+                            if (!mm) continue;
+
+                            const num = parseFloat(mm[1].replace(',', '.'));
+                            if (Number.isNaN(num)) continue;
+
+                            const star = String(Math.round(Math.max(1, Math.min(5, num))));
+
+                            if (reviewsByStar[star].length < maxReviewsPerStar) {
+                                reviewsByStar[star].push({
+                                    reviewer: rv.reviewer,
+                                    rating: rv.ratingText,
+                                    title: rv.title,
+                                    date: rv.date,
+                                    body: rv.body,
+                                    verified: rv.verified,
+                                });
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // intentionally ignored (Amazon DOM volatility)
+                }
 
 
 
@@ -940,18 +1040,11 @@ const run = async () => {
                         try {
                             await autoScroll(page, 600, 300);
                             await page.waitForTimeout(500);
-                            const altImgs = await page.$$eval('#altImages img', imgs =>
+                            const altImgs = await page.$$eval('#altImages img, #imageBlockThumbs img, #imgTagWrapperId img', imgs =>
                                 imgs.map(i => i.getAttribute('src') || i.getAttribute('data-src') || i.src).filter(Boolean)
                             ).catch(() => []);
-                            // if (altImgs && altImgs.length) {
-                            //     envelope.product.media.images = altImgs.filter(Boolean);
-                            // }
-
                             if (altImgs && altImgs.length) {
-                                const firstImage = altImgs.find(Boolean);
-                                if (firstImage) {
-                                    envelope.product.media.images = [firstImage]; // keep array format
-                                }
+                                envelope.product.media.images = altImgs.filter(Boolean);
                             }
                         } catch (err) {
                             // ignore
