@@ -47,62 +47,13 @@
     "social_proof": {
       "rating": {
         "average": 4.6,
-        "count": 29222
+        "count": 29427
       },
-      "reviews": [
-        {
-          "reviewer": "Caitlan Foley",
-          "rating": 4,
-          "title": "Small profile, difficult to use controls",
-          "body": "Satisfaction as far as fit and quality but design sucks. I get the idea is to make them less obvious but the stem is so short that it’s pretty much impossible for me to use the squeeze controls. I thought this would be an upgrade from my original AirPods but I am regretting ordering these because the controls are so difficult for me to use. The squeeze to pause or skip music usually ends up with me pulling them out of my ear because it’s so difficult to get the right motion. I have steady hands and no motor skills issues so I guess I’m surprised more people don’t have the same complains as me. Setup and customization of controls was easy and it was fun to see all the new controls and adjustments I could make in settings with these vs my original pair but it’s hands down not worth the trade off for functionality. The direction they are loaded into the charging case also changed and it’s difficult to figure out which way they go in but that’s a pretty small issue in the grand scheme of this product. Had I known now what I didn’t know then, I would have bought and older maybe used or refurbished set vs these. Even if they were the same cost.",
-          "date": "2026-04-27",
-          "verified_purchase": false
-        },
-        {
-          "reviewer": "Leidy",
-          "rating": 5,
-          "title": "Amazing quality and comfort!",
-          "body": "\"I'm really impressed with these! The sound is crystal clear, and they are super comfortable to wear for hours. The battery life is great and they pair instantly with my phone. Definitely worth every penny!\"",
-          "date": "2026-05-09",
-          "verified_purchase": false
-        },
-        {
-          "reviewer": "Barbara",
-          "rating": 5,
-          "title": "Amazing Product !!!",
-          "body": "I bought these Apple AirPods about three months ago, and they’ve been great so far. The sound quality is clear and well-balanced, making them perfect for music, calls, and everyday use.They’re very comfortable and fit securely, even when I’m on the move. The wireless connection is smooth and reliable, and I love not having to deal with cords. The battery life is solid and lasts long enough for daily use, and charging them is quick and easy.The microphone works well for calls, with clear sound on both ends. They also connect seamlessly with my Apple devices, which makes everything super convenient.Overall, I’m very happy with this purchase and would definitely recommend these AirPods to anyone looking for high-quality, wireless earbuds.",
-          "date": "2026-03-31",
-          "verified_purchase": false
-        },
-        {
-          "reviewer": "Mark and Dee",
-          "rating": 5,
-          "title": "LOVE these Airpods!",
-          "body": "I have used Airpods 2 for years.  I will have a difficult time when I switch back and forth between all of my Airpods now!  These are ten times better than my 2s.  The quality, the fit, and the case are all such an upgrade.  It's a bit of a challenge to adjust to how they go in/out of the case, and how short they are compared to my 2s, but it's ok, the sound is so much better!  I haven't learned how to control them like my old ones, YET.  They also have features like noise canceling and adjust to your own ears/head.....That's a project I will get onto when I have some time to sit still and read about it.  Overall, I'm thrilled!",
-          "date": "2026-05-06",
-          "verified_purchase": false
-        },
-        {
-          "reviewer": "Le",
-          "rating": 5,
-          "title": "Good for Office or normal movement, Bad for anything with a lot of motion",
-          "body": "Quality and Sound as expected. Description of product is accurate. Easy connection to iPhone.However, If you move around like jog or do sports training. Probably not the ideal buds. They tend to fall off when I start jogging.",
-          "date": "2026-04-23",
-          "verified_purchase": false
-        },
-        {
-          "reviewer": "Mayne",
-          "rating": 5,
-          "title": "Just What I Needed",
-          "body": "So far so good. Operate the way it should. It was easy to connect. Loud. Light in weight; clean VERY clean! White color, no scratches or scuffs! Great range! Material is typical! Adjustments are great features.",
-          "date": "2026-04-28",
-          "verified_purchase": false
-        }
-      ],
+      "reviews": [],
       "reviews_meta": {
         "source": "pdp_recent",
-        "reviews_found_total": 6,
-        "reviews_returned_total": 6
+        "reviews_found_total": 0,
+        "reviews_returned_total": 0
       }
     },
     "sales": {
@@ -111,11 +62,11 @@
     }
   },
   "meta": {
-    "scraped_at": "2026-05-15T17:35:16.756Z",
+    "scraped_at": "2026-05-21T08:20:15.872Z",
     "actor_version": "1.1"
   },
   "log": {
-    "start": "2026-05-15T17:34:49.414Z",
+    "start": "2026-05-21T08:19:47.088Z",
     "steps": [],
     "validation": {
       "valid": true,
@@ -124,8 +75,8 @@
     "modules_failed": [
       "category_path"
     ],
-    "total_reviews_scraped": 6,
-    "timing_ms": 27342,
+    "total_reviews_scraped": 0,
+    "timing_ms": 28784,
     "sv_ingest_error": "405"
   }
 }

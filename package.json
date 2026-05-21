@@ -2,15 +2,15 @@
   "name": "sv-amazon-scraper",
   "version": "0.1.0",
   "type": "module",
-  "main": "src/main.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node src/main.js"
+    "start": "node server.js",
+    "scrape": "node src/main.js --inputFile input.json"
   },
   "dependencies": {
-    "apify": "^3.5.2",
     "axios": "^1.4.0",
-    "crawlee": "3.15.3",
     "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "minimist": "^1.2.7",
     "playwright": "1.57.0"
   }
