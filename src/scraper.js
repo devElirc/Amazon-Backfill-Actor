@@ -284,6 +284,9 @@ export async function runScraper(input, options = {}) {
                 } catch {
                     modulesFailed.push('category_path');
                 }
+                const amazonCategoryPath = Array.isArray(category_path)
+                    ? category_path.map((c) => String(c || '').trim()).filter(Boolean)
+                    : [];
 
                 let priceCurrent = null;
                 let priceList = null;
@@ -631,13 +634,14 @@ export async function runScraper(input, options = {}) {
                         average: average_rating !== null ? average_rating : null,
                         count: total_ratings || null,
                     },
+                    amazon_category_path: amazonCategoryPath,
                     reviews_by_star: reviewsByStar,
                     sales: { units_sold: null, usually_kept: null },
                     _meta_internal: {
                         asin: asin || extractASINFromURL(url) || null,
                         url,
                         brand: brand || null,
-                        categories: category_path || [],
+                        categories: amazonCategoryPath,
                         availability: { status: availability_status, text: availability_text || null },
                         copy: {
                             bullet_points,
@@ -723,6 +727,7 @@ export async function runScraper(input, options = {}) {
                                 reviews_returned_total: reviews.length,
                             },
                         },
+                        amazon_category_path: normalized.amazon_category_path || normalized._meta_internal?.categories || [],
                         sales: normalized.sales || { units_sold: null, usually_kept: null },
                     },
                     meta: {
